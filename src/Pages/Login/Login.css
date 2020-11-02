@@ -1,0 +1,11 @@
+.Container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.CenterAlign {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

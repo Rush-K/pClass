@@ -1,36 +1,61 @@
-import './Login.css';
-import React from 'react';
-import MainMenuBar from '/Users/rush-k/Desktop/pclass/src/img/Main_Menu_bar.png';
-import DGUMark from '/Users/rush-k/Desktop/pclass/src/img/DGUMark.png';
-import Username from '/Users/rush-k/Desktop/pclass/src/img/Username.png';
-import Password from '/Users/rush-k/Desktop/pclass/src/img/Password.png';
-import LoginButton from '/Users/rush-k/Desktop/pclass/src/img/LoginButton.png';
-import RegisterButton from '/Users/rush-k/Desktop/pclass/src/img/RegisterButton.png';
+import React, { useState } from "react";
+import { withRouter } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "/Users/rush-k/Desktop/pclass/src/_actions/userAction";
+function Login(props) {
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const onEmailHandler = (e) => {
+    setEmail(e.currentTarget.value);
+  };
+  const onPasswordHanlder = (e) => {
+    setPassword(e.currentTarget.value);
+  };
 
+  const onSubmitHandler = (e) => {
+    e.preventDefault();
+    //로그인을 진행하기위해서
+    //첫번째 useDispatch(액션) 을 활용해서 액션을 dispatch해준다
+    const body = {
+      email: Email,
+      password: Password,
+    };
+    dispatch(loginUser(body))
+      .then((res) => {
+        console.log(res);
+        if (res.payload.loginSuccess) {
+          props.history.push("/");
+        } else {
+          alert(res.payload.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-function Login() {
-    return (
-        <view id='root'>
-            <img width="100%" src={MainMenuBar}/>
-            <view className="CenterAlign">
-                <img width="30%" src={DGUMark}/>
-            </view>
-            <view className="CenterAlign">
-                <img width="30%" src={Username}/>
-            </view>
-            <view className="CenterAlign">
-                <img width="30%" src={Password}/>
-            </view>
-            <view className="CenterAlign">
-                <img width="15%" src={LoginButton}/>
-                <img width="15%" src={RegisterButton}/>
-            </view>
-        </view>
-    );
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        height: "100vh",
+      }}>
+      <form
+        onSubmit={onSubmitHandler}
+        style={{ display: "flex", flexDirection: "column" }}>
+        <label>Email</label>
+        <input type="email" value={Email} onChange={onEmailHandler} />
+        <label>Password</label>
+        <input type="password" value={Password} onChange={onPasswordHanlder} />
+        <br />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
 }
 
-function ClickButton(e) {
-    
-}
-
-export default Login;
+export default withRouter(Login);

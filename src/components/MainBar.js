@@ -11,16 +11,24 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import ChattingIcon from '@material-ui/icons/People';
+import Drawer from '@material-ui/core/Drawer';
+import MenuItem from '@material-ui/core/MenuItem';
 
 class MainBar extends Component {
-
+    constructor(props) {
+      super(props);
+      this.state = {
+        toggle: false
+      }
+    }
+    handleDrawerToggle = () => this.setState({toggle: !this.state.toggle})
     render() {
       const { classes } = this.props;
         return (
           <div className={classes.root}>
           <AppBar style={{backgroundColor: '#F6BB43'}} position="static">
             <Toolbar>
-              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.handleDrawerToggle}>
                 <MenuIcon />
               </IconButton>
               <img className={classes.markSize} src={DGUmark}/>
@@ -55,6 +63,9 @@ class MainBar extends Component {
               </div>
             </Toolbar>
           </AppBar>
+          <Drawer open={this.state.toggle}>
+            <MenuItem onClick={this.handleDrawerToggle}>접기</MenuItem>
+          </Drawer>
         </div>
         );
     }

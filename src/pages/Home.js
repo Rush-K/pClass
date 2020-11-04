@@ -1,35 +1,36 @@
 import { React } from 'react';
 import { Route } from 'react-router-dom';
-import { MainBar } from '../components';
 import { Login } from '../components/Login';
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-      },
-      menuButton: {
-        marginRight: theme.spacing(2),
-      },
-      title: {
-        flexGrow: 1,
-      },
-      markSize: {
-          width: "50px",
-          height: "50px",
-      },
-      sectionDesktop: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex'
-      }
-    }
+    paper: {
+      marginTop: theme.spacing(8),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    markSize: {
+      width: '100px',
+      height: '100px',
+    },
+    form: {
+      width: '100%', // Fix IE 11 issue.
+      marginTop: theme.spacing(1),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+    },
   }));
 
 const Home = () => {
     return (
         <Route>
-            <MainBar classes={useStyles()}/>
+            <Login classes={useStyles()}/>
         </Route>
     );
 }

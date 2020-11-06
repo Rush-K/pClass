@@ -1,15 +1,15 @@
 import { Route } from 'react-router-dom';
-import { Subject } from '../components/Subject';
+import { Project } from '../components/Project';
 import { MainBar } from '../components';
 import useStyles from '../pages/useStyles';
 
-const SubjOrder = ({match}) => {
+const ProjOrder = ({match}) => {
     return (
         <Route>
             <MainBar classes={useStyles()}/>
-            <Subject params={match.params} classes={useStyles()}/>
+            <Project params={match.params} classes={useStyles()}/>
         </Route>
     );
 }
 
-export default SubjOrder;
+export default ProjOrder;

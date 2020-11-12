@@ -5,6 +5,7 @@ import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import { Divider } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
+import Addfeedform from "./Addfeedform";
 
 
 const columnNames = ["TO DO", "DOING", "DONE"];
@@ -25,13 +26,16 @@ const pickColor = (i) => {
   return cardColors[i];
 };
 
+
+
+
 class Project extends Component {
   constructor() {
     super();
-
     this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
+      open: false,
       scene: {
         type: "container",
         props: {
@@ -64,7 +68,12 @@ class Project extends Component {
     };
   }
 
+
+  handleDrawerClose = () => this.setState({open: !this.state.open})
+
   render() {
+    const printForm = false;
+
     return (
       <MainContainer style={{width: '100%', marginTop: '5vh', textAlign: 'center'}}>
         <Container
@@ -120,12 +129,13 @@ class Project extends Component {
                       );
                     })}
                   </Container>
-                  {column.id === "column0" && <PlusButton style={{marginTop: "1vh", marginBottom: "1vh"}} />}
+                  {column.id === "column0" && <PlusButton onClick={this.handleDrawerClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
                 </div>
               </Paper>
             );
           })}
         </Container>
+        {this.state.open === true && <Addfeedform /> } 
       </MainContainer>
     );
   }

@@ -4,6 +4,8 @@ import { applyDrag, generateItems } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import { Divider } from "@material-ui/core";
+import PlusButton from "@material-ui/icons/AddBox";
+
 
 const columnNames = ["TO DO", "DOING", "DONE"];
 
@@ -19,16 +21,14 @@ const cardColors = [
   "ivory",
   "khaki"
 ];
-const pickColor = () => {
-  let rand = Math.floor(Math.random() * 10);
-  return cardColors[rand];
+const pickColor = (i) => {
+  return cardColors[i];
 };
 
 class Project extends Component {
   constructor() {
     super();
 
-    this.onColumnDrop = this.onColumnDrop.bind(this);
     this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
@@ -41,23 +41,23 @@ class Project extends Component {
           id: `column${i}`,
           type: "container",
           name: columnNames[i],
+          style: {
+            width: '90%', height: '20vh',
+            marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+            backgroundColor: pickColor(i)
+          },
           props: {
             orientation: "vertical",
             className: "card-container"
           },
-          children: generateItems(+(Math.random() * 10).toFixed(), j => ({
+          children: generateItems(2, j => ({
             type: "draggable",
             id: `${i}${j}`,
             props: {
               className: "card",
               varient: "outlined",
-              style: {
-                  width: '90%', height: '10vh',
-                  marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
-                  backgroundColor: pickColor()
-                },
             },
-            data: j
+            data: `집에 가고 싶다 ${j}`
           }))
         }))
       }
@@ -113,13 +113,14 @@ class Project extends Component {
                     {column.children.map(card => {
                       return (
                         <Draggable key={card.id}>
-                          <Paper square {...card.props}>
+                          <Paper square style={column.style} {...card.props}>
                             <p>{card.data}</p>
                           </Paper>
                         </Draggable>
                       );
                     })}
                   </Container>
+                  {column.id === "column0" && <PlusButton style={{marginTop: "1vh", marginBottom: "1vh"}} />}
                 </div>
               </Paper>
             );
@@ -135,24 +136,15 @@ class Project extends Component {
     ];
   }
 
-  onColumnDrop(dropResult) {
-    const scene = Object.assign({}, this.state.scene);
-    scene.children = applyDrag(scene.children, dropResult);
-    this.setState({
-      scene
-    });
-  }
-
   onCardDrop(columnId, dropResult) {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
       const scene = Object.assign({}, this.state.scene);
       const column = scene.children.filter(p => p.id === columnId)[0];
       const columnIndex = scene.children.indexOf(column);
-
+      
       const newColumn = Object.assign({}, column);
       newColumn.children = applyDrag(newColumn.children, dropResult);
       scene.children.splice(columnIndex, 1, newColumn);
-
       this.setState({
         scene
       });

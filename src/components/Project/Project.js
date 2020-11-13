@@ -3,7 +3,7 @@ import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag, generateItems } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import { Divider } from "@material-ui/core";
+import { Divider, Dialog } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
 
@@ -54,28 +54,27 @@ class Project extends Component {
             orientation: "vertical",
             className: "card-container"
           },
-          children: generateItems(2, j => ({
-            type: "draggable",
-            id: `${i}${j}`,
-            props: {
-              className: "card",
-              varient: "outlined",
-            },
-            data: `집에 가고 싶다 ${j}`
-          }))
+          feedList: []
         }))
       }
     };
   }
 
+  addChildren = (prev) => {
+    const feedList = this.state.scene;
+    feedList.children[0].feedList = feedList.children[0].feedList.concat(prev);
+    this.setState({
+      scene: feedList
+    });
+  }
 
   handleDrawerClose = () => this.setState({open: !this.state.open})
 
   render() {
-    const printForm = false;
-
     return (
       <MainContainer style={{width: '100%', marginTop: '5vh', textAlign: 'center'}}>
+        <Container style={{position: "relative"}}>
+        </Container>
         <Container
           orientation="horizontal"
           onDrop={this.onColumnDrop}
@@ -87,7 +86,7 @@ class Project extends Component {
             
           }}
           style={{width: '100%'}}
-        >
+        > 
           {this.state.scene.children.map(column => {
             return (
               <Paper varient="outlined" style={{display: 'inline-flex', justifyContent: 'center', width: '30%', marginLeft: '2vw'}}>
@@ -119,29 +118,35 @@ class Project extends Component {
                     }}
                     dropPlaceholderAnimationDuration={200}
                   >
-                    {column.children.map(card => {
+                    {column.feedList.map(card => {
                       return (
                         <Draggable key={card.id}>
                           <Paper square style={column.style} {...card.props}>
-                            <p>{card.data}</p>
+                          <h6>{card.feedname}</h6>
+                          <Divider />
+                          <text>담당자 : ({card.feedmanager})</text>
+                          <Divider />
+                          <text>상세 내용 : {card.feedarticle}</text>
                           </Paper>
                         </Draggable>
                       );
                     })}
                   </Container>
                   {column.id === "column0" && <PlusButton onClick={this.handleDrawerClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
+                  <Dialog open={this.state.open} onClose={this.handleDrawerClose} aria-labelledby="form-dialog-title">
+                   <Addfeedform addChildren={this.addChildren}/> 
+                  </Dialog>
                 </div>
               </Paper>
             );
           })}
         </Container>
-        {this.state.open === true && <Addfeedform /> } 
       </MainContainer>
     );
   }
 
   getCardPayload(columnId, index) {
-    return this.state.scene.children.filter(p => p.id === columnId)[0].children[
+    return this.state.scene.children.filter(p => p.id === columnId)[0].feedList[
       index
     ];
   }
@@ -153,7 +158,7 @@ class Project extends Component {
       const columnIndex = scene.children.indexOf(column);
       
       const newColumn = Object.assign({}, column);
-      newColumn.children = applyDrag(newColumn.children, dropResult);
+      newColumn.feedList = applyDrag(newColumn.feedList, dropResult);
       scene.children.splice(columnIndex, 1, newColumn);
       this.setState({
         scene

@@ -6,7 +6,10 @@ import Paper from "@material-ui/core/Paper";
 import { Divider, Dialog } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
-
+import Feed from "./Feed";
+import Comment from "./Comment";
+import SettingIcon from '@material-ui/icons/FindInPage';
+import CommentIcon from '@material-ui/icons/Comment';
 
 const columnNames = ["TO DO", "DOING", "DONE"];
 
@@ -26,28 +29,28 @@ const pickColor = (i) => {
   return cardColors[i];
 };
 
-
-
-
 class Project extends Component {
   constructor() {
     super();
     this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
-      open: false,
+      openfeed: false,
+      openfeedform: false,
+      openfeedcomment: false,
       scene: {
         type: "container",
         props: {
           orientation: "horizontal"
         },
+        numoffeed: 0,
         children: generateItems(3, i => ({
           id: `column${i}`,
           type: "container",
           name: columnNames[i],
           style: {
             width: '90%', height: '20vh',
-            marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
             backgroundColor: pickColor(i)
           },
           props: {
@@ -62,13 +65,43 @@ class Project extends Component {
 
   addChildren = (prev) => {
     const feedList = this.state.scene;
-    feedList.children[0].feedList = feedList.children[0].feedList.concat(prev);
+    const feedindex = prev;
+
+    feedList.numoffeed = feedList.numoffeed + 1;
+    feedindex.id = feedList.numoffeed;
+
+    feedList.children[0].feedList = feedList.children[0].feedList.concat(feedindex);
     this.setState({
       scene: feedList
     });
   }
 
-  handleDrawerClose = () => this.setState({open: !this.state.open})
+  modifyCard = (prev) => {
+    const feedinfo = this.state.scene;
+    const complete = false;
+
+    for (let column in feedinfo.children) {
+      for (let feed in column.feedList) {
+        if (prev.id === feed.id) {
+          feedinfo.children[feedinfo.children.indexOf(column)].
+          feedList[column.feedList.indexOf(feed)] = prev;
+          complete = !complete;
+          break;
+        }
+      }
+      if (complete === true) break;
+    }
+    console.log(feedinfo);
+
+    this.setState({
+      scene: feedinfo
+    });
+    
+  }
+
+  handleFeedFormClose = () => this.setState({openfeedform: !this.state.openfeedform})
+  handleFeedClose = () => this.setState({openfeed: !this.state.openfeed})
+  handleFeedCommentClose = () => this.setState({openfeedcomment: !this.state.openfeedcomment})
 
   render() {
     return (
@@ -122,18 +155,31 @@ class Project extends Component {
                       return (
                         <Draggable key={card.id}>
                           <Paper square style={column.style} {...card.props}>
-                          <h6>{card.feedname}</h6>
+                          <div style={{position: "absolute"}}>
+                            <SettingIcon onClick={this.handleFeedClose}/>
+                            <Dialog open={this.state.openfeed} onClose={this.handleFeedClose} aria-labelledby="form-dialog-title">
+                              <Feed card={card} modifyCard={this.modifyCard}/> 
+                            </Dialog>
+                          </div>
+                          <div style={{display: "flex", height: "60%", alignItems: "middle",justifyContent: "center"}}>
+                            <h3>{card.feedname}</h3>
+                          </div>
                           <Divider />
                           <text>담당자 : ({card.feedmanager})</text>
                           <Divider />
-                          <text>상세 내용 : {card.feedarticle}</text>
+                          <div onClick={this.handleFeedCommentClose} style={{marginTop: "1vh"}}>
+                          <CommentIcon /> 댓글 보기
+                          </div>
+                          <Dialog open={this.state.openfeedcomment} onClose={this.handleFeedCommentClose} aria-labelledby="form-dialog-title">
+                              <Comment card={card} modifyCard={this.modifyCard}/> 
+                          </Dialog>
                           </Paper>
                         </Draggable>
                       );
                     })}
                   </Container>
-                  {column.id === "column0" && <PlusButton onClick={this.handleDrawerClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
-                  <Dialog open={this.state.open} onClose={this.handleDrawerClose} aria-labelledby="form-dialog-title">
+                  {column.id === "column0" && <PlusButton onClick={this.handleFeedFormClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
+                  <Dialog open={this.state.openfeedform} onClose={this.handleFeedFormClose} aria-labelledby="form-dialog-title">
                    <Addfeedform addChildren={this.addChildren}/> 
                   </Dialog>
                 </div>

@@ -8,12 +8,13 @@ class Addfeedform extends Component {
         super(props);
         this.addChildren = this.props.addChildren;
         this.state = {
-            position: 0,
+            id: 0,
             feedname: null,
             feedmanager: null,
             feedarticle: null,
             feedstart: null,
-            feedend: null
+            feedend: null,
+            commentlist: [],
         }
     }
     nameChange = (e) => {

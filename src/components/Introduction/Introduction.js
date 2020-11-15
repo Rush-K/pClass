@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-import Container from '@material-ui/core/Container';
 import Title from '../../img/title.png';
 
 
 class Introduction extends Component {
-    constructor(props) {
-        super(props);
-    }
     render() {
         const { classes } = this.props;
         return (

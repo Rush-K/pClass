@@ -5,10 +5,6 @@ import "./index.css";
 import Root from "./client/Root";
 import { createStore } from "redux";
 
-const store = createStore();
-
 ReactDOM.render(
-      <Provider>
-            <Root />
-      </Provider>, document.getElementById("root")
+            <Root />, document.getElementById("root")
 );

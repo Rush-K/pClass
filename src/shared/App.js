@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { Route, Switch } from "react-router-dom";
-import { Home, Main, SubjOrder, ProjOrder } from '../pages';
+import { Home, Main, SubjOrder, ProjOrder } from '../containers';
 
 class App extends Component {
   render() {

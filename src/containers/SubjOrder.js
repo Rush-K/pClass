@@ -1,7 +1,7 @@
 import { Route } from 'react-router-dom';
 import { Subject } from '../components/Subject';
 import { MainBar } from '../components';
-import useStyles from '../pages/useStyles';
+import useStyles from './useStyles';
 
 const SubjOrder = ({match}) => {
     return (

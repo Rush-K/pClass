@@ -11,16 +11,33 @@ import Container from '@material-ui/core/Container';
 import DGUmark from '../../img/dguMarkonly.png';
 import Title from '../../img/title.png';
 
+import * as actions from '../../actions';
+import { connect } from 'react-redux';
+
 class Login extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        email: null,
+        password: null,
         isLogin: false
       }
     }
+    
+    onCreate = () => this.props.onCreate(this.state);
+
+    emailChange = (e) => {
+      this.setState({email : e.target.value});
+    }
+
+    passwordChange = (e) => {
+      this.setState({password : e.target.value});
+    }
+
     gotoMain = () => this.setState({isLogin: !this.state.isLogin})
     render() {
       const { classes } = this.props;
+      console.log(this.props);
         return (
           <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -43,6 +60,7 @@ class Login extends Component {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                onChange={this.emailChange}
               />
               <TextField
                 variant="outlined"
@@ -55,6 +73,7 @@ class Login extends Component {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={this.passwordChange}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="secondary" />}
@@ -73,9 +92,9 @@ class Login extends Component {
                 <Grid item xs>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Button onClick={this.onCreate}>
                     {"회원가입"}
-                  </Link>
+                  </Button>
                 </Grid>
               </Grid>
             </form>
@@ -87,4 +106,16 @@ class Login extends Component {
     }
 }
 
-export default Login;
+//액션 생성 함수 준비
+const mapToDispatch = (dispatch) =>({
+  onCreate: (data)  => dispatch(actions._create(data))
+});
+
+function mapStateToProps(state){
+  //여기에서 state인자란 리듀서에서의 state이다.
+  console.log("mapStateToProps : ",state);
+  return state;
+}
+
+// 리덕스에 연결시키고 내보냅니다.
+export default connect(mapStateToProps, mapToDispatch)(Login);

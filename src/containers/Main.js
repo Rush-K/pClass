@@ -2,7 +2,7 @@ import { React } from 'react';
 import { Route } from 'react-router-dom';
 import { MainBar } from '../components';
 import { Introduction } from '../components/Introduction';
-import useStyles from '../pages/useStyles';
+import useStyles from './useStyles';
 
 const Main = () => {
     return (

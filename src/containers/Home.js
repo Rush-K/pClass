@@ -3,10 +3,10 @@ import { Route } from 'react-router-dom';
 import { Login } from '../components/Login';
 import useStyles from './useStyles';
 
-const Home = () => {
+const Home = (props) => {
     return (
         <Route>
-            <Login classes={useStyles()}/>
+            <Login {...props} classes={useStyles()}/>
         </Route>
     );
 }

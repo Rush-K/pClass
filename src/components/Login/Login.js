@@ -23,7 +23,7 @@ class Login extends Component {
         isLogin: false
       }
     }
-    
+
     onCreate = () => this.props.onCreate(this.state);
 
     emailChange = (e) => {

@@ -24,7 +24,6 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import CheckIcon from '@material-ui/icons/Check';
 import Link from '@material-ui/core/Link';
 
-
 class MainBar extends Component {
     constructor(props) {
       super(props);
@@ -32,8 +31,10 @@ class MainBar extends Component {
         open: false
       }
     }
+
     handleDrawerClose = () => this.setState({open: !this.state.open})
     render() {
+      console.log(this.props);
       const { classes } = this.props;
         return (
           <div className={classes.root}>

@@ -3,11 +3,11 @@ import { Project } from '../components/Project';
 import { MainBar } from '../components';
 import useStyles from './useStyles';
 
-const ProjOrder = ({match}) => {
+const ProjOrder = (props) => {
     return (
         <Route>
-            <MainBar classes={useStyles()}/>
-            <Project params={match.params} classes={useStyles()}/>
+            <MainBar {...props} classes={useStyles()}/>
+            <Project {...props} params={props.match.params} classes={useStyles()}/>
         </Route>
     );
 }

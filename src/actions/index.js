@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
-export const _create = (data) => {
+export const _createAccount = (data) => {
     return {
-        type: types._CREATE,
+        type: types._CREATEACCOUNT,
         info: data
     }
 }

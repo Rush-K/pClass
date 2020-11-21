@@ -17,11 +17,7 @@ function SubjectReducer (state = root_reducer, action){
  
     const {subjectInfo} = state;
     switch (action.type){//리듀서를 통해서 들어온 action 
-        case types._CREATE: //acionTypes에서 구분
-            return { 
-                subjectInfo : subjectInfo.concat(action.info)//setting : 한 이유는 초기 setting을 했기에 변경 후에도 setting key를 유지하기 위함 
-                
-            }   
+        
         default: return state; //action을 이용하지 않을때 기본 this.props.setting을 사용할 때 사용
     }
 } 

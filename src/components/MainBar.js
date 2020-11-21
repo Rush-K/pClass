@@ -23,15 +23,22 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import CheckIcon from '@material-ui/icons/Check';
 import Link from '@material-ui/core/Link';
+import { Dialog, Container, TextField } from '@material-ui/core';
 
 class MainBar extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        miopen: false,
         open: false
       }
     }
-
+    memberInvite = () => {
+      this.setState({miopen: !this.state.miopen});
+    }
+    goToMain = () => {
+      this.props.history.push('/main');
+    }
     handleDrawerClose = () => this.setState({open: !this.state.open})
     render() {
       console.log(this.props);
@@ -43,11 +50,13 @@ class MainBar extends Component {
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.handleDrawerClose}>
                 <MenuIcon />
               </IconButton>
+              <div onClick={this.goToMain} style={{display: "inline-flex"}}>
               <img className={classes.markSize} src={DGUmark}/>
               <Typography variant="h5" className={classes.title}>DGU pClass</Typography>
+              </div>
               <Button color="inherit"/>
               <Typography variant="h6" className={classes.title}></Typography>
-              <div className={classes.sectionDesktop}>
+              {this.props.prjopen == true && <div className={classes.sectionDesktop}>
                 <IconButton aria-label="show 4 new mails" color="inherit">
                   <Badge badgeContent={0} color="secondary">
                   <CloudDownloadIcon />
@@ -64,15 +73,36 @@ class MainBar extends Component {
                   </Badge>
                 </IconButton>
                 <IconButton
+                  onClick={this.memberInvite}
                   edge="end"
                   aria-label="account of current user"
                   aria-controls="primary-search-account-menu"
                   aria-haspopup="true"
                   color="inherit"
                 >
-                  <AccountCircle />
+                  <AccountCircle/>
                 </IconButton>
-              </div>
+              </div>}
+
+            {/* 프로젝트 초대 기능 UI - start*/}
+              <Dialog open={this.state.miopen} onClose={this.memberInvite}>
+              <Container
+              style={{width: '600px', height: '100px'}}>
+                <text>김민수님! 팀원을 초대하시겠어요?</text>
+                <TextField
+                id="invitetoemail"
+                label="초대자 이메일 입력"
+                style={{ margin: 8, width: "95%"}}
+                placeholder="초대하고 싶은 사람의 E-mail을 입력하세요"
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                shrink: true,
+                }} />
+              </Container>
+            </Dialog>
+            {/* 프로젝트 초대 기능 UI - end*/}
+
             </Toolbar>
           </AppBar>
           <div className={classes.root}>

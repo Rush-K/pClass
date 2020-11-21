@@ -7,9 +7,6 @@ import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core/';
 import ProjectIcon from '@material-ui/icons/Note';
 import Addprojectform from './Addprojectform';
 
-import * as actions from '../../actions';
-import { connect } from 'react-redux';
-
 class Subject extends Component {
     constructor() {
       super();
@@ -65,16 +62,4 @@ class Subject extends Component {
 
 }
 
-//액션 생성 함수 준비
-const mapToDispatch = (dispatch) =>({
-  onCreate: (data)  => dispatch(actions._create(data))
-});
-
-function mapStateToProps(state){
-  //여기에서 state인자란 리듀서에서의 state이다.
-  console.log("mapStateToProps : ",state);
-  return state;
-}
-
-// 리덕스에 연결시키고 내보냅니다.
-export default connect(mapStateToProps, mapToDispatch)(Subject);
+export default Subject;

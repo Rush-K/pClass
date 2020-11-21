@@ -108,7 +108,7 @@ class Login extends Component {
 
 //액션 생성 함수 준비
 const mapToDispatch = (dispatch) =>({
-  onCreate: (data)  => dispatch(actions._create(data))
+  onCreate: (data)  => dispatch(actions._createAccount(data))
 });
 
 function mapStateToProps(state){

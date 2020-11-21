@@ -6,7 +6,7 @@ import useStyles from './useStyles';
 const ProjOrder = (props) => {
     return (
         <Route>
-            <MainBar {...props} classes={useStyles()}/>
+            <MainBar prjopen={true} {...props} classes={useStyles()}/>
             <Project {...props} params={props.match.params} classes={useStyles()}/>
         </Route>
     );

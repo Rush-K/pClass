@@ -6,3 +6,17 @@ export const _createAccount = (data) => {
         info: data
     }
 }
+
+export const _loggedin = (data) => {
+    return {
+        type: types._LOGGEDIN,
+        info : data
+    }
+}
+
+export const _createProject = (data) => {
+    return {
+        type: types._CREATEPROJECT,
+        info : data
+    }
+}

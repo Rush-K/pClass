@@ -2,17 +2,26 @@ import * as types from '../actions/actionTypes'; //액션 코드로 가져온다
  
  
 const root_reducer = { // state 초기값
-    userInfo : [
+    feedlist : [
         {
-            email : "k_rush@naver.com",
-            password : "1234",
+            id: 0,
+            feedcolumn: 0,
+            feedname: "나혼자하는중",
+            feedmanager: "김민수",
+            feedarticle: "적당히하자",
+            feedstart: "2020-11-23",
+            feedend: "2020-11-24",
+        },
+        {
+            id: 0,
+            feedcolumn: 1,
+            feedname: "나혼자하는중",
+            feedmanager: "김민수",
+            feedarticle: "적당히하자",
+            feedstart: "2020-11-23",
+            feedend: "2020-11-24",
         }
     ],
-    loginUserInfo : {
-        email : null,
-        password : null,
-    }
-
 } 
  
 function LoginReducer (state = root_reducer, action){ 
@@ -26,23 +35,6 @@ function LoginReducer (state = root_reducer, action){
                 userInfo : userInfo.concat(action.info)//setting : 한 이유는 초기 setting을 했기에 변경 후에도 setting key를 유지하기 위함 
                 
             }   
-        case types._LOGGEDIN:
-            for (let user of userInfo) {
-                    console.log(userInfo);
-                    console.log(action.info);
-                    console.log(user);
-                    if (user.email == action.info.email && user.password == action.info.password) {
-                        loginUserInfo.email = action.info.email;
-                        loginUserInfo.password = action.info.password;
-                        alert("로그인 성공");                        
-                    } else {
-                        alert("로그인 실패");
-                    }
-            }
-            return {
-                userInfo : userInfo,
-                loginUserInfo : loginUserInfo
-            }
         default: return state; //action을 이용하지 않을때 기본 this.props.setting을 사용할 때 사용
     }
 } 

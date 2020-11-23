@@ -9,6 +9,7 @@ class Addfeedform extends Component {
         this.addChildren = this.props.addChildren;
         this.state = {
             id: 0,
+            feedcolumn: 0,
             feedname: null,
             feedmanager: null,
             feedarticle: null,

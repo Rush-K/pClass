@@ -7,6 +7,7 @@ class Addprojectform extends Component {
         this.numofproject = this.props.numofproject;
         this.addProject = this.props.addProject;
         this.state ={
+            subjectid: this.props.subjectindex,
             projectid: this.numofproject + 1,
             projectname: null,
             projectleader: null,

@@ -24,7 +24,8 @@ yarn install 을 이용하여 해당 프로그램의 모듈을 다운로드 하�
 ## Built With
 
 * [김민수](https://github.com/Rush-K) - Leader, Front-end
-* [이영서](Link) - Front-end
+--------------------------------------------------------
+* [이영서](Link) - Back-end
 * [김우용](Link) - Back-end
 * [박해웅](Link) - Back-end
 

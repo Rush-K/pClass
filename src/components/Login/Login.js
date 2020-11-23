@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,9 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import DGUmark from '../../img/dguMarkonly.png';
 import Title from '../../img/title.png';
-
-import * as actions from '../../actions';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Dialog } from '@material-ui/core';
 
 class Login extends Component {
     constructor(props) {
@@ -20,11 +18,12 @@ class Login extends Component {
       this.state = {
         email: null,
         password: null,
-        isLogin: false
       }
     }
 
     onCreate = () => this.props.onCreate(this.state);
+
+    tryLogin = () => this.props.onLogin(this.state);
 
     emailChange = (e) => {
       this.setState({email : e.target.value});
@@ -36,8 +35,9 @@ class Login extends Component {
 
     gotoMain = () => this.setState({isLogin: !this.state.isLogin})
     render() {
+
       const { classes } = this.props;
-      console.log(this.props);
+
         return (
           <Container component="main" maxWidth="xs">
           <CssBaseline />
@@ -79,15 +79,15 @@ class Login extends Component {
                 control={<Checkbox value="remember" color="secondary" />}
                 label="ID 기억하기"
               />
-              <Link to="/main">
               <Button
                 fullWidth
                 variant="contained"
                 color="secondary"
                 className={classes.submit}
+                onClick={this.tryLogin}
               >
                 LOGIN
-              </Button></Link>
+              </Button>
               <Grid container>
                 <Grid item xs>
                 </Grid>
@@ -101,21 +101,14 @@ class Login extends Component {
           </div>
           <Box mt={8}>
           </Box>
+          {this.props.loginUserInfo.email != null && 
+          <Dialog open={true}>
+            <Link to='/main'><Button>메인 페이지로 이동</Button></Link>
+          </Dialog>
+          }
         </Container>
         );
     }
 }
 
-//액션 생성 함수 준비
-const mapToDispatch = (dispatch) =>({
-  onCreate: (data)  => dispatch(actions._createAccount(data))
-});
-
-function mapStateToProps(state){
-  //여기에서 state인자란 리듀서에서의 state이다.
-  console.log("mapStateToProps : ",state);
-  return state;
-}
-
-// 리덕스에 연결시키고 내보냅니다.
-export default connect(mapStateToProps, mapToDispatch)(Login);
+export default Login;

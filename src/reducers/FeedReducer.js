@@ -4,7 +4,11 @@ import * as types from '../actions/actionTypes'; //액션 코드로 가져온다
 const root_reducer = { // state 초기값
     feedlist : [
         {
-            id: 0,
+            index: {
+                subjectid: 0,
+                projectid: 1
+            },
+            id: 2,
             feedcolumn: 0,
             feedname: "나혼자하는중",
             feedmanager: "김민수",
@@ -13,7 +17,11 @@ const root_reducer = { // state 초기값
             feedend: "2020-11-24",
         },
         {
-            id: 0,
+            index: {
+                subjectid: 0,
+                projectid: 1
+            },
+            id: 1,
             feedcolumn: 1,
             feedname: "나혼자하는중",
             feedmanager: "김민수",
@@ -30,7 +38,7 @@ function LoginReducer (state = root_reducer, action){
  
     const {userInfo, loginUserInfo} = state;
     switch (action.type){//리듀서를 통해서 들어온 action 
-        case types._CREATEACCOUNT: //acionTypes에서 구분
+        case types._CREATEFEED: //acionTypes에서 구분
             return { 
                 userInfo : userInfo.concat(action.info)//setting : 한 이유는 초기 setting을 했기에 변경 후에도 setting key를 유지하기 위함 
                 

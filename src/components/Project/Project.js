@@ -11,27 +11,9 @@ import Comment from "./Comment";
 import SettingIcon from '@material-ui/icons/FindInPage';
 import CommentIcon from '@material-ui/icons/Comment';
 
-const columnNames = ["TO DO", "DOING", "DONE"];
-
-const cardColors = [
-  "azure",
-  "beige",
-  "bisque",
-  "blanchedalmond",
-  "burlywood",
-  "cornsilk",
-  "gainsboro",
-  "ghostwhite",
-  "ivory",
-  "khaki"
-];
-const pickColor = (i) => {
-  return cardColors[i];
-};
-
 class Project extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
@@ -44,21 +26,53 @@ class Project extends Component {
           orientation: "horizontal"
         },
         numoffeed: 0,
-        children: generateItems(3, i => ({
-          id: `column${i}`,
+        children: [
+          {
+          id: `column0`,
           type: "container",
-          name: columnNames[i],
+          name: "TO DO",
           style: {
             width: '90%', height: '20vh',
             marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
-            backgroundColor: pickColor(i)
+            backgroundColor:   "azure"
           },
           props: {
             orientation: "vertical",
             className: "card-container"
           },
-          feedList: []
-        }))
+          feedList: this.props.feed[0].feedList
+          },
+          {
+          id: `column1`,
+          type: "container",
+          name: "DOING",
+          style: {
+            width: '90%', height: '20vh',
+            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+            backgroundColor: "beige"
+          },
+          props: {
+            orientation: "vertical",
+            className: "card-container"
+          },
+          feedList: this.props.feed[1].feedList
+          },
+          {
+          id: `column2`,
+          type: "container",
+          name: "DONE",
+          style: {
+            width: '90%', height: '20vh',
+            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+            backgroundColor: "bisque"
+          },
+          props: {
+            orientation: "vertical",
+            className: "card-container"
+          },
+          feedList: this.props.feed[2].feedList
+          }
+        ]
       }
     };
   }

@@ -33,7 +33,7 @@ class Subject extends Component {
               <Paper style={{display: 'block', justifyContent: 'center', alignItems: 'center', width:'100%', height:'60vh'}} elevation={3}>
                 <List>
                 {this.state.projectlist.map(project => (
-                <ListItem button key={project.projectname} component={Link} href={`/subject/${this.props.projectInfo.subjectname}/${project.projectid}`}>
+                <ListItem button key={project.projectname} component={Link} href={`/subject/${this.props.subjectname}/${project.projectid}`}>
                   <ListItemIcon><ProjectIcon /></ListItemIcon>
                   <ListItemText style={{fontWeight: '2'}} primary={project.projectname} />
                   <Box style={{justifyContent: 'left'}}>

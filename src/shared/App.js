@@ -12,7 +12,7 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route path="/main" component={Main} />
           <Route exact path="/subject/:name" component={SubjOrder} />
-          <Route path="/subject/:name/:pname" compoent={ProjOrder} />
+          <Route exact path="/subject/:name/:pname" component={ProjOrder} />
       </div>
     );
   }

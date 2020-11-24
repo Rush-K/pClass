@@ -10,13 +10,20 @@ export const _createAccount = (data) => {
 export const _loggedin = (data) => {
     return {
         type: types._LOGGEDIN,
-        info : data
+        info: data
     }
 }
 
 export const _createProject = (data) => {
     return {
         type: types._CREATEPROJECT,
-        info : data
+        info: data
+    }
+}
+
+export const _createFeed = (data) => {
+    return {
+        type: types._CREATEFEED,
+        info: data
     }
 }

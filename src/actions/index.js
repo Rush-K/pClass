@@ -21,6 +21,13 @@ export const _createProject = (data) => {
     }
 }
 
+export const _deleteProject = (data) => {
+    return {
+        type: types._DELETEPROJECT,
+        info: data
+    }
+}
+
 export const _createFeed = (data) => {
     return {
         type: types._CREATEFEED,

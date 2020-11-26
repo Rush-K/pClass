@@ -7,6 +7,7 @@ import "./index.css";
 import App from "./shared/App";
 import store from './store';
 
+console.log(sessionStorage);
 ReactDOM.render(
     <BrowserRouter>
     <Provider store={store}>

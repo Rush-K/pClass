@@ -9,13 +9,14 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import DGUmark from '../../img/dguMarkonly.png';
 import Title from '../../img/title.png';
-import { Link } from 'react-router-dom';
-import { Dialog } from '@material-ui/core';
+import axios from 'axios';
+import { Dialog, Link } from '@material-ui/core';
 
 class Login extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        open: false,
         email: null,
         password: null,
       }
@@ -23,7 +24,30 @@ class Login extends Component {
 
     onCreate = () => this.props.onCreate(this.state);
 
-    tryLogin = () => this.props.onLogin(this.state);
+    tryLogin = () => {
+      axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/login', {
+        email: this.state.email,
+        password: this.state.password
+      })
+      .then(function (response) {
+          if (response.data.loginSuccess === true) {
+            sessionStorage.setItem(
+                "loginUserInfo",
+                JSON.stringify({
+                  userid: response.data.userId,
+                })
+            );
+            console.log(sessionStorage);
+            alert("로그인 성공")
+          } else {
+            alert("로그인 실패")
+          }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      console.log(sessionStorage);
+    }
 
     emailChange = (e) => {
       this.setState({email : e.target.value});
@@ -33,7 +57,6 @@ class Login extends Component {
       this.setState({password : e.target.value});
     }
 
-    gotoMain = () => this.setState({isLogin: !this.state.isLogin})
     render() {
 
       const { classes } = this.props;
@@ -101,7 +124,7 @@ class Login extends Component {
           </div>
           <Box mt={8}>
           </Box>
-          {this.props.loginUserInfo.email != null && 
+          {this.state.open === true && 
           <Dialog open={true}>
             <Link to='/main'><Button>메인 페이지로 이동</Button></Link>
           </Dialog>

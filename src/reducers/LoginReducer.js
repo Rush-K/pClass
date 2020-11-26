@@ -1,16 +1,10 @@
 import * as types from '../actions/actionTypes'; //액션 코드로 가져온다.
- 
+import axios from 'axios'; 
  
 const root_reducer = { // state 초기값
-    userInfo : [
-        {
-            email : "k_rush@naver.com",
-            password : "1234",
-        }
-    ],
     loginUserInfo : {
         email : null,
-        password : null,
+        userid : null
     }
 
 } 
@@ -27,20 +21,29 @@ function LoginReducer (state = root_reducer, action){
                 
             }   
         case types._LOGGEDIN:
-            for (let user of userInfo) {
-                    console.log(userInfo);
-                    console.log(action.info);
-                    console.log(user);
-                    if (user.email == action.info.email && user.password == action.info.password) {
-                        loginUserInfo.email = action.info.email;
-                        loginUserInfo.password = action.info.password;
-                        alert("로그인 성공");                        
-                    } else {
-                        alert("로그인 실패");
-                    }
-            }
+            axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/login', {
+                email: action.info.email,
+                password: action.info.password
+              })
+              .then(function (response) {
+                  if (response.data.loginSuccess === true) {
+                    alert("로그인 성공")
+                    sessionStorage.setItem(
+                        "loginUserInfo",
+                        JSON.stringify({
+                          userid: response.data.userId,
+                          email: action.info.email,
+                        })
+                    );
+                    console.log(sessionStorage);
+                  } else {
+                    alert("로그인 실패")
+                  }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
             return {
-                userInfo : userInfo,
                 loginUserInfo : loginUserInfo
             }
         default: return state; //action을 이용하지 않을때 기본 this.props.setting을 사용할 때 사용

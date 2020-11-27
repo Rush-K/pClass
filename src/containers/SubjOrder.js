@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 import { Subject } from '../components/Subject';
-import { MainBar } from '../components';
+import { Mainbar } from '../components/Mainbar';
 import useStyles from './useStyles';
 import { useSelector, useDispatch } from 'react-redux';
 import { _createProject, _deleteProject } from '../actions';
@@ -12,8 +12,6 @@ const SubjOrder = ( {match} ) => {
         mainMenuInfo : state.SubjectReducer.subjectlist,
         projectInfo : state.ProjectReducer.projectlist
     })); // 유저정보를 가져옴
-    const loginUserInfo = sessionStorage.getItem("loginUserInfo");
-     // useDispatch 는 리덕스 스토어의 dispatch 를 함수에서 사용 할 수 있게 해주는 Hook 입니다.
      const dispatch = useDispatch();
      // 각 액션들을 디스패치하는 함수들을 만드세요
      const projectCreate = (data) => dispatch(_createProject(data));
@@ -27,12 +25,13 @@ const SubjOrder = ( {match} ) => {
             arr = arr.concat(project);
         }
     }
+    const loginUserInfo = JSON.parse(sessionStorage.getItem("loginUserInfo"));
 
     return (
         <Route>
-            <MainBar mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
-            <Subject subjectname={match.params.name} subjectindex={subjectIndex.indexOf(match.params.name)} 
-            projectInfo={arr} projectCreate={projectCreate} projectDelete={projectDelete} 
+            <Mainbar loginUserInfo={loginUserInfo} mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
+            <Subject subjectid={match.params.name} 
+            projectCreate={projectCreate} projectDelete={projectDelete} 
             userInfo={loginUserInfo} classes={useStyles()}/>
         </Route>
     );

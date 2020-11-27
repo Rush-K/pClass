@@ -5,7 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import DGUmark from '../img/dguMarkonly.png';
+import DGUmark from '../../img/dguMarkonly.png';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import axios from 'axios';
 import Drawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
@@ -17,12 +19,12 @@ import List from '@material-ui/core/List';
 import SubjectIcon from '@material-ui/icons/Subject';
 import Link from '@material-ui/core/Link';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 
-class MainBar extends Component {
+class Mainbar extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        subjectlist: null,
         homeopen: false,
         miopen: false,
         open: false
@@ -34,16 +36,31 @@ class MainBar extends Component {
     goToMain = () => {
       this.setState({homeopen : !this.state.homeopen});
     }
-    handleDrawerClose = () => this.setState({open: !this.state.open})
+
+    menuClose = () => this.setState({open: !this.state.open});
     homeClose = () => this.setState({homeopen: !this.state.homeopen});
+    
+    subjectInfo = async () => {
+      let temp = await axios.get('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/subjectmenu')
+    .then(function (response) {
+           console.log(response);
+           return response.data;
+         })
+    .catch(function (error) {
+           console.log(error);
+      });
+      console.log(temp);
+      this.setState({subjectlist: temp, open: !this.state.open});
+    }
+
     render() {
-      console.log(this.props);
       const { classes } = this.props;
+      console.log(this.state)
         return (
           <div className={classes.root}>
           <AppBar style={{backgroundColor: '#F6BB43'}} position="static">
             <Toolbar>
-              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.handleDrawerClose}>
+              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.subjectInfo}>
                 <MenuIcon />
               </IconButton>
               <div onClick={this.goToMain} style={{display: "inline-flex"}}>
@@ -78,20 +95,14 @@ class MainBar extends Component {
             }
             </Toolbar>
           </AppBar>
-          <div className={classes.root}>
-          </div>
+
+            {/* 메뉴 사이드 바 */}
           <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={this.state.open}
-            classes={{
-            paper: classes.drawerPaper,
-            }}
+            className={classes.drawer} variant="persistent" anchor="left" open={this.state.open} classes={{ paper: classes.drawerPaper }}
           >
             <div className={classes.drawerHeader}>
-              <IconButton onClick={this.handleDrawerClose}>
-                <ChevronLeftIcon /> Menu
+              <IconButton onClick={this.menuClose}>
+              <ChevronLeftIcon /> Menu
               </IconButton>
             </div>
             <List>
@@ -101,23 +112,26 @@ class MainBar extends Component {
                 </ListItemIcon>
                 <ListItemText primary="SUBJECT" />
               </ListItem>
-              <Divider />
-              {this.props.mainMenuInfo.map(subject => (
-                <ListItem button key={subject.subjectname} component={Link} href={`/subject/${subject.subjectname}`}>
-                  <ListItemIcon><InboxIcon /></ListItemIcon>
-                  <ListItemText primary={subject.subjectname} />
-                </ListItem>
-              ))}
-              <Divider />
-              <ListItem button key="logout" component={Link} href="/">
-                  <ListItemIcon><LogoutIcon /></ListItemIcon>
-                  <ListItemText primary="로그아웃" />
-              </ListItem>
+             <Divider />
+             {this.state.subjectlist != null && this.state.subjectlist.map(subject => (
+               <ListItem button key={subject.sub_id} component={Link} href={`/subject/${subject.sub_id}`}>
+                 <ListItemIcon><InboxIcon /></ListItemIcon>
+                 <div style={{display: 'block'}}>
+                   <ListItemText primary={subject.subjectname}></ListItemText>
+                   <ListItemText secondary={subject.sub_id}></ListItemText>
+                 </div>
+               </ListItem>
+             ))}
+             <Divider />
+             <ListItem button key="logout" component={Link} href="/">
+               <ListItemIcon><LogoutIcon /></ListItemIcon>
+               <ListItemText primary="로그아웃" />
+             </ListItem>
             </List> 
           </Drawer>
-          </div>
-        );
+        </div>
+      );
     }
 }
 
-export default MainBar;
+export default Mainbar;

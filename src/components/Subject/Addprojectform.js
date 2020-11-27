@@ -7,19 +7,13 @@ class Addprojectform extends Component {
         this.numofproject = this.props.numofproject;
         this.addProject = this.props.addProject;
         this.state ={
-            subjectid: this.props.subjectindex,
-            projectid: this.numofproject + 1,
             projectname: null,
-            projectleader: null,
             projectreadme: null
         }
     }
 
     nameChange = (e) => {
         this.setState({projectname: e.target.value});
-    }
-    leaderChange = (e) => {
-        this.setState({projectleader: e.target.value});
     }
     readmeChange = (e) => {
         this.setState({projectreadme: e.target.value});
@@ -33,7 +27,7 @@ class Addprojectform extends Component {
 
     render() {
         return  (
-            <Container style={{width: "600px", height: "450px"}}>
+            <Container style={{width: "600px", height: "400px"}}>
             <h1> 프로젝트 개설하기 </h1>
             <Divider />
             <TextField
@@ -49,18 +43,6 @@ class Addprojectform extends Component {
             onChange={this.nameChange}
             />
             <Divider />
-            <TextField
-            id="projectleader"
-            label="담당자 입력"
-            style={{ margin: 8, width: "95%"}}
-            placeholder="담당자 이름을 입력하세요"
-            fullWidth
-            margin="normal"
-            InputLabelProps={{
-            shrink: true,
-            }}
-            onChange={this.leaderChange}
-            />
             <TextField
             id="projectreadme"
             label="프로젝트 정보 입력"

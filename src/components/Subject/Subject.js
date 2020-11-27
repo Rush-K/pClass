@@ -7,17 +7,28 @@ import { List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core/';
 import ProjectIcon from '@material-ui/icons/Note';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Addprojectform from './Addprojectform';
+import axios from 'axios';
 
 class Subject extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        subjectInfo: null,
         open: false,
-        numofproject: this.props.projectInfo[this.props.projectInfo.length - 1].projectid,
-        projectlist: this.props.projectInfo
       }
     }
- 
+    
+    loadProject = async () => {
+      let temp = await axios.get(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/subjectmenu/${this.props.subjectid}`)
+                              .then(function (response) {
+                                  console.log(response);
+                                  return response.data;
+                              }).catch(function (error) {
+                                  console.log(error);
+                              });
+      this.setState({subjectInfo: temp});
+    }
+
     addProject = (prev) => {
       const pl = this.state.projectlist;
       this.props.projectCreate(prev);
@@ -32,15 +43,20 @@ class Subject extends Component {
     }
 
     handleProjectFormClose = () => this.setState({open: !this.state.open})
+
     render() {
+      if (this.state.subjectInfo === null) {
+        return ( <div onClick={this.loadProject()} />);
+      }
+      console.log(this.state);
+
         return(
             <Container style={{display: 'block',justifyContent: 'center',
              alignItems: 'center', textAlign: 'center'}}>
-
               <h1 style={{color: '#F6BB43'}}>{this.props.subjectname} Project List</h1>
               <Paper style={{display: 'flex',width:'100%', height:'60vh'}} elevation={3}>
                 <List style={{width: '85%'}}>
-                {this.state.projectlist.map(project => (
+                {this.state.subjectInfo.p_list.map(project => (
                 <ListItem button key={project.projectname} component={Link} href={`/subject/${this.props.subjectname}/${project.projectid}`}>
                   <ListItemIcon><ProjectIcon /></ListItemIcon>
                   <ListItemText style={{fontWeight: '2'}} primary={project.projectname} />
@@ -51,7 +67,7 @@ class Subject extends Component {
               ))}
                 </List>
                 <List>
-                  {this.state.projectlist.map(project => (
+                  {this.state.subjectInfo.p_list.map(project => (
                     <ListItem onClick={() => this.delProject(project)}>
                       <ListItemIcon>
                        <CancelIcon/>

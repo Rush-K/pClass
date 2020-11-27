@@ -1,6 +1,6 @@
 import { Route } from 'react-router-dom';
 import { Project } from '../components/Project';
-import { MainBar } from '../components';
+import { Mainbar } from '../components/Mainbar';
 import useStyles from './useStyles';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -35,7 +35,7 @@ const ProjOrder = ( {match} ) => {
 
     return (
         <Route>
-            <MainBar mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
+            <Mainbar mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
             <Project feed={temp} classes={useStyles()}/>
         </Route>
     );

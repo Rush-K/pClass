@@ -24,8 +24,8 @@ class Login extends Component {
 
     onCreate = () => this.props.onCreate(this.state);
 
-    tryLogin = () => {
-      axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/login', {
+    tryLogin = async () => {
+      let dat= await axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/login', {
         email: this.state.email,
         password: this.state.password
       })
@@ -46,7 +46,7 @@ class Login extends Component {
       .catch(function (error) {
         console.log(error);
       });
-      console.log(sessionStorage);
+      this.setState({open: !this.state.open}, () => console.log(this.state.open));
     }
 
     emailChange = (e) => {
@@ -126,7 +126,7 @@ class Login extends Component {
           </Box>
           {this.state.open === true && 
           <Dialog open={true}>
-            <Link to='/main'><Button>메인 페이지로 이동</Button></Link>
+            <Button href='/main'>메인 페이지로 이동</Button>
           </Dialog>
           }
         </Container>

@@ -12,6 +12,8 @@ const Home = ( {history} ) => {
   // 각 액션들을 디스패치하는 함수들을 만드세요
   const onCreate = (data) => dispatch(_createAccount(data));
 
+  sessionStorage.clear();
+  console.log(sessionStorage);
     return (
         <Route>
             <Login onCreate={onCreate}

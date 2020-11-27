@@ -16,11 +16,14 @@ import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
 import SubjectIcon from '@material-ui/icons/Subject';
 import Link from '@material-ui/core/Link';
+import LogoutIcon from '@material-ui/icons/ExitToApp';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 
 class MainBar extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        homeopen: false,
         miopen: false,
         open: false
       }
@@ -29,9 +32,10 @@ class MainBar extends Component {
       this.setState({miopen: !this.state.miopen});
     }
     goToMain = () => {
-      this.props.history.push('/main');
+      this.setState({homeopen : !this.state.homeopen});
     }
     handleDrawerClose = () => this.setState({open: !this.state.open})
+    homeClose = () => this.setState({homeopen: !this.state.homeopen});
     render() {
       console.log(this.props);
       const { classes } = this.props;
@@ -43,11 +47,35 @@ class MainBar extends Component {
                 <MenuIcon />
               </IconButton>
               <div onClick={this.goToMain} style={{display: "inline-flex"}}>
-              <img className={classes.markSize} src={DGUmark}/>
-              <Typography variant="h5" className={classes.title}>DGU pClass</Typography>
+                <img className={classes.markSize} src={DGUmark}/>
+                <Typography variant="h5" className={classes.title}>DGU pClass</Typography>
               </div>
-              <Button color="inherit"/>
-              <Typography variant="h6" className={classes.title}></Typography>
+
+              {/* 홈 이동 */}
+              {this.state.homeopen === true && 
+               <Dialog
+               open={this.state.homeopen}
+               keepMounted
+               onClose={this.homeClose}
+               aria-labelledby="alert-dialog-slide-title"
+               aria-describedby="alert-dialog-slide-description"
+             >
+               <DialogTitle id="alert-dialog-slide-title">{"홈 화면으로 이동하시겠습니까?"}</DialogTitle>
+               <DialogContent>
+                 <DialogContentText id="alert-dialog-slide-description">
+                   확인을 누르시면 홈 화면으로 이동합니다.
+                 </DialogContentText>
+               </DialogContent>
+               <DialogActions>
+                 <Button onClick={this.homeClose} color="primary">
+                   취소
+                 </Button>
+                 <Button href='/main' color="primary">
+                   확인
+                 </Button>
+               </DialogActions>
+             </Dialog>
+            }
             </Toolbar>
           </AppBar>
           <div className={classes.root}>
@@ -80,6 +108,11 @@ class MainBar extends Component {
                   <ListItemText primary={subject.subjectname} />
                 </ListItem>
               ))}
+              <Divider />
+              <ListItem button key="logout" component={Link} href="/">
+                  <ListItemIcon><LogoutIcon /></ListItemIcon>
+                  <ListItemText primary="로그아웃" />
+              </ListItem>
             </List> 
           </Drawer>
           </div>

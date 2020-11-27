@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Container, Draggable } from "react-smooth-dnd";
-import { applyDrag, generateItems } from "./utils";
+import { applyDrag } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import { Divider, Dialog } from "@material-ui/core";
+import { Divider, Dialog, Button } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
 import Feed from "./Feed";
@@ -200,6 +200,9 @@ class Project extends Component {
               </Paper>
             );
           })}
+        </Container>
+        <Container style={{marginTop: '3vh'}}>
+          <Button style={{width: '90%'}}variant="outlined" color="secondary">프로젝트 저장하기</Button>
         </Container>
       </MainContainer>
     );

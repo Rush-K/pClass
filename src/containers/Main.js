@@ -14,6 +14,7 @@ const Main = () => {
     })); // 유저정보를 가져옴
     const loginUserInfo = sessionStorage.getItem("loginUserInfo");
     console.log(loginUserInfo);
+
   return (
     <div>
       <Route>

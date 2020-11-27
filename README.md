@@ -14,8 +14,8 @@ git clone https://github.com/Rush-K/pClass.git
 
 아래 사항들이 설치가 되어있어야합니다.
 
-yarn
-node.js
+* npm
+* yarn
 
 ### Installing
 
@@ -31,4 +31,8 @@ yarn install 을 이용하여 해당 프로그램의 모듈을 다운로드 하�
 
 ## Programming Language
 
-* React & material-ui
+* Front-End : React & material-ui
+* Back-End : AWS EC2 UBUNTU 20.04 LTS with Node.js & mongoDB
+
+## Back-End Repository
+* (http://github.com/wooykim/pClass_BackEnd)

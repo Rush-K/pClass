@@ -35,18 +35,23 @@ class Login extends Component {
                 "loginUserInfo",
                 JSON.stringify({
                   userid: response.data.userId,
+                  email: response.data.email,
+                  name: response.data.name
                 })
             );
-            console.log(sessionStorage);
-            alert("로그인 성공")
+            alert("로그인이 성공적으로 완료되었습니다.")
           } else {
-            alert("로그인 실패")
+            alert(response.data.message)
+            return 1;
           }
       })
       .catch(function (error) {
         console.log(error);
       });
-      this.setState({open: !this.state.open}, () => console.log(this.state.open));
+
+      if (dat != 1) {
+        this.setState({open: !this.state.open}, () => console.log(this.state.open));
+      }
     }
 
     emailChange = (e) => {

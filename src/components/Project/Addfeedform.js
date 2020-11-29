@@ -8,48 +8,43 @@ class Addfeedform extends Component {
         super(props);
         this.addChildren = this.props.addChildren;
         this.state = {
-            id: 0,
-            feedcolumn: 0,
-            feedname: null,
-            feedmanager: null,
-            feedarticle: null,
-            feedstart: null,
-            feedend: null,
-            commentlist: [],
+            writer: this.props.loginUserInfo.email,
+            feedname: "",
+            manager: "", 
+            start_date: "",
+            end_date: "",
+            status: `column0`,     // ToDo : 0, Doing : 1, Done : 2
+            content: ""
         }
     }
     nameChange = (e) => {
         this.setState({feedname: e.target.value});
     }
     managerChange = (e) => {
-        this.setState({feedmanager: e.target.value});
+        this.setState({manager: e.target.value});
     }
     articleChange = (e) => {
-        this.setState({feedarticle: e.target.value});
+        this.setState({content: e.target.value});
     }
     startChange = (e) => {
-        this.setState({feedstart: e.target.value});
+        this.setState({start_date: e.target.value});
     }
     endChange = (e) => {
-        this.setState({feedend: e.target.value});
+        this.setState({end_date: e.target.value});
     }
     showData = () => {
-        if (this.state.feedname === null ||
-            this.state.feedmanager === null ||
-            this.state.feedarticle === null ||
-            this.state.feedstart === null ||
-            this.state.feedend === null) {
-            alert("입력 다하세요");
+        if (this.state.feedname === "" ||
+            this.state.manager === "" ||
+            this.state.content === "" ||
+            this.state.start_date === "" ||
+            this.state.end_date === "") {
+            alert("피드 입력 폼을 빠짐 없이 입력해주세요.");
         } else {
-                alert(this.state.feedname + "\n"
-                +this.state.feedmanager + "\n" 
-                +this.state.feedarticle + "\n"
-                +this.state.feedstart + "\n"
-                +this.state.feedend);
                 this.addChildren(this.state);
         }
     }
     render() {
+        console.log(this.state);
         return (
             <div style={{width: "600px", display: "flex", justifyContent: "center", marginTop: "5vh", marginBottom: "5vh"}}>
             <Paper elevation={0}

@@ -11,18 +11,22 @@ import DGUmark from '../../img/dguMarkonly.png';
 import Title from '../../img/title.png';
 import axios from 'axios';
 import { Dialog, Link } from '@material-ui/core';
+import { Register } from '.';
 
 class Login extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        registeropen: false,
         open: false,
         email: null,
         password: null,
       }
     }
 
-    onCreate = () => this.props.onCreate(this.state);
+    openRegister = () => {
+      this.setState({registeropen: !this.state.registeropen});
+    }
 
     tryLogin = async () => {
       let dat= await axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/login', {
@@ -67,14 +71,19 @@ class Login extends Component {
       const { classes } = this.props;
 
         return (
-          <Container component="main" maxWidth="xs">
+          <Container style={{display: 'grid', width: '100%', height: '100vh', gridTemplateColumns: '1fr 1fr'}}>
+          <Container style={{marginTop: '15vh', alignItems: 'center',gridColumn: '1 / 2'}}>
+            {/* 회원 가입 창*/}
+            {this.state.registeropen === true && <Register />}
+            {this.state.registeropen === false && <img width="100%" src={Title}/>}
+          </Container>
+          <Container style={{marginTop: '12vh', alignItems: 'center',gridColumn: '2 / 3'}} component="main" maxWidth="xs">
           <CssBaseline />
           <div className={classes.paper}>
             <Box className={classes.markSize}>
             <img src={DGUmark}/>
             </Box>
             <Container>
-            <img width="100%" src={Title}/>
             </Container>
             <form className={classes.form} noValidate>
               <TextField
@@ -120,7 +129,7 @@ class Login extends Component {
                 <Grid item xs>
                 </Grid>
                 <Grid item>
-                  <Button onClick={this.onCreate}>
+                  <Button onClick={this.openRegister}>
                     {"회원가입"}
                   </Button>
                 </Grid>
@@ -135,6 +144,7 @@ class Login extends Component {
           </Dialog>
           }
         </Container>
+          </Container>
         );
     }
 }

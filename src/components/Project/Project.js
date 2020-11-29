@@ -3,7 +3,7 @@ import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import { Divider, Dialog, Button } from "@material-ui/core";
+import { Typography, Divider, Dialog, Button } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
 import Feed from "./Feed";
@@ -16,7 +16,6 @@ import axios from 'axios';
 class Project extends Component {
   constructor(props) {
     super(props);
-    this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
       loading: false,
@@ -81,24 +80,74 @@ class Project extends Component {
                           }).catch(function (error) {
                                 console.log(error);
                           });
-    this.setState({projectInfo: temp, loading: true});
+
+    let todotemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/ToDo`)
+                          .then(function (response) {
+                                console.log(response);
+                                return response.data;
+                          }).catch(function (error) {
+                                console.log(error);
+                          });
+
+    let doingtemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Doing`)
+                          .then(function (response) {
+                                console.log(response);
+                                return response.data;
+                          }).catch(function (error) {
+                                console.log(error);
+                          });
+
+    let donetemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Done`)
+                          .then(function (response) {
+                                console.log(response);
+                                return response.data;
+                          }).catch(function (error) {
+                                console.log(error);
+                          });
+
+    const t = this.state.scene;
+    t.children[0].feedList = todotemp;
+    t.children[1].feedList = doingtemp;
+    t.children[2].feedList = donetemp;
+    this.setState({scene: t, projectInfo: temp, loading: true});
   }
 
-  loadFeed = () => {
-    this.setState({loading: true});
-  }
-
-  addChildren = (prev) => {
-    const feedList = this.state.scene;
-    const feedindex = prev;
-
-    feedList.numoffeed = feedList.numoffeed + 1;
-    feedindex.id = feedList.numoffeed;
-
-    feedList.children[0].feedList = feedList.children[0].feedList.concat(feedindex);
-    this.setState({
-      scene: feedList
+  addChildren = async (prev) => {
+    let item = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/addToDo`, {
+      writer: prev.writer,
+      feedname: prev.feedname,
+      manager: prev.manager,
+      start_date: prev.start_date,
+      end_date: prev.end_date,
+      content: prev.content,
+      status: prev.status
+    })
+    .then(function (response) {
+          alert("피드 추가가 완료되었습니다.");
+          console.log(response);
+          return response.data;
+    }).catch(function (error) {
+          console.log(error);
     });
+    this.handleFeedFormClose();
+    this.loadProject();
+  }
+
+  modifyChildren = async (prev, columnId) => {
+    let item = await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/feedDragDrop`, {
+      feedId: prev._id,
+      status: columnId
+    }).then(function (response) {
+      console.log(response);
+    }).catch(function (error) {
+      console.log(error);
+    });
+    await this.loadProject();
+  }
+
+  delChildren = async (prev) => {
+    let item = await axios.delete(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/${prev._id}/deletefeed`);
+    this.loadProject();
   }
 
   modifyCard = (prev) => {
@@ -134,7 +183,7 @@ class Project extends Component {
     }
     console.log(this.state);
     return (
-      <MainContainer>
+      <MainContainer style={{marginBottom: '5vh'}}>
       {/* 프로젝트 정보 창 */}
       <Paper style={{display: "flex", flexDirection: "column", overflow: "scroll", marginTop: "2vh", width: "100%", height: "500px"}} varient="outlined" elevation={4}>
         <Container style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center"}}>
@@ -213,17 +262,17 @@ class Project extends Component {
                             <Dialog open={this.state.openfeed} onClose={this.handleFeedClose} aria-labelledby="form-dialog-title">
                               <Feed card={card} modifyCard={this.modifyCard}/> 
                             </Dialog>
-                            <CancelIcon/>
+                            <CancelIcon onClick={() => this.delChildren(card)}/>
                           </div>
                           <Divider />
                           <div style={{display: "flex", height: "60%", alignItems: "middle",justifyContent: "center"}}>
                             <h3>{card.feedname}</h3>
                           </div>
                           <Divider />
-                          <text>담당자 : ({card.feedmanager})</text>
+                          <text>담당자 : ({card.manager})</text>
                           <Divider />
                           <div onClick={this.handleFeedCommentClose} style={{marginTop: "1vh"}}>
-                          <CommentIcon /> 댓글 보기
+                          <CommentIcon />
                           </div>
                           <Dialog open={this.state.openfeedcomment} onClose={this.handleFeedCommentClose} aria-labelledby="form-dialog-title">
                               <Comment card={card} modifyCard={this.modifyCard}/> 
@@ -233,17 +282,14 @@ class Project extends Component {
                       );
                     })}
                   </Container>
-                  {column.id === "column0" && <PlusButton onClick={this.handleFeedFormClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
+                  {column.id === `column0` && <PlusButton onClick={this.handleFeedFormClose} style={{marginTop: "1vh", marginBottom: "1vh"}} />}
                   <Dialog open={this.state.openfeedform} onClose={this.handleFeedFormClose} aria-labelledby="form-dialog-title">
-                   <Addfeedform addChildren={this.addChildren}/> 
+                   <Addfeedform loginUserInfo={this.props.loginUserInfo} addChildren={this.addChildren}/> 
                   </Dialog>
                 </div>
               </Paper>
             );
           })}
-        </Container>
-        <Container style={{marginTop: '3vh'}}>
-          <Button style={{width: '90%'}}variant="outlined" color="secondary">프로젝트 저장하기</Button>
         </Container>
       </MainContainer>
       </MainContainer>
@@ -256,18 +302,10 @@ class Project extends Component {
     ];
   }
 
-  onCardDrop(columnId, dropResult) {
+  onCardDrop = (columnId, dropResult) => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-      const scene = Object.assign({}, this.state.scene);
-      const column = scene.children.filter(p => p.id === columnId)[0];
-      const columnIndex = scene.children.indexOf(column);
-      
-      const newColumn = Object.assign({}, column);
-      newColumn.feedList = applyDrag(newColumn.feedList, dropResult);
-      scene.children.splice(columnIndex, 1, newColumn);
-      this.setState({
-        scene
-      });
+      console.log(dropResult);
+      this.modifyChildren(dropResult.payload, columnId);
     }
   }
 }

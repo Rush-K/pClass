@@ -10,6 +10,8 @@ import Feed from "./Feed";
 import Comment from "./Comment";
 import SettingIcon from '@material-ui/icons/FindInPage';
 import CommentIcon from '@material-ui/icons/Comment';
+import CancelIcon from '@material-ui/icons/Cancel';
+import axios from 'axios';
 
 class Project extends Component {
   constructor(props) {
@@ -17,9 +19,13 @@ class Project extends Component {
     this.onCardDrop = this.onCardDrop.bind(this);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
+      loading: false,
       openfeed: false,
       openfeedform: false,
       openfeedcomment: false,
+
+      projectInfo: null,
+
       scene: {
         type: "container",
         props: {
@@ -31,50 +37,55 @@ class Project extends Component {
           id: `column0`,
           type: "container",
           name: "TO DO",
-          style: {
-            width: '90%', height: '20vh',
-            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
-            backgroundColor:   "azure"
-          },
+          style: {backgroundColor: "azure"},
           props: {
             orientation: "vertical",
             className: "card-container"
           },
-          feedList: this.props.feed[0].feedList
+          feedList: []
           },
           {
           id: `column1`,
           type: "container",
           name: "DOING",
-          style: {
-            width: '90%', height: '20vh',
-            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
-            backgroundColor: "beige"
-          },
+          style: {backgroundColor: "beige"},
           props: {
             orientation: "vertical",
             className: "card-container"
           },
-          feedList: this.props.feed[1].feedList
+          feedList: []
           },
           {
           id: `column2`,
           type: "container",
           name: "DONE",
-          style: {
-            width: '90%', height: '20vh',
-            marginTop: '1vh', marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
-            backgroundColor: "bisque"
-          },
+          style: {backgroundColor: "bisque"},
           props: {
             orientation: "vertical",
             className: "card-container"
           },
-          feedList: this.props.feed[2].feedList
+          feedList: []
           }
         ]
       }
     };
+  }
+
+  loadProject = async () => {
+    let temp = await axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/project/main', {                        
+                             projectId: this.props.projectInfo.projectid
+                          })
+                          .then(function (response) {
+                                console.log(response);
+                                return response.data;
+                          }).catch(function (error) {
+                                console.log(error);
+                          });
+    this.setState({projectInfo: temp, loading: true});
+  }
+
+  loadFeed = () => {
+    this.setState({loading: true});
   }
 
   addChildren = (prev) => {
@@ -118,7 +129,33 @@ class Project extends Component {
   handleFeedCommentClose = () => this.setState({openfeedcomment: !this.state.openfeedcomment})
 
   render() {
+    if (this.state.loading === false) {
+      return ( <div onClick={this.loadProject()}></div>);
+    }
+    console.log(this.state);
     return (
+      <MainContainer>
+      {/* 프로젝트 정보 창 */}
+      <Paper style={{display: "flex", flexDirection: "column", overflow: "scroll", marginTop: "2vh", width: "100%", height: "500px"}} varient="outlined" elevation={4}>
+        <Container style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center"}}>
+          <h1>[ {this.state.projectInfo.projectname} ]</h1>
+        </Container>
+        <Divider style={{width: '100%'}}/>
+        <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+          <body>Leader : {this.state.projectInfo.leader}</body>
+        </Container>
+        <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+          {this.state.projectInfo.contributor.map(member => {
+            return (
+              <body>( {member} )</body>
+            );
+          })}
+        </Container>
+        <Divider style={{width: '100%'}}/>
+        <Container style={{width: "95%", display: "flex", marginTop: "2vh", marginLeft: "1vh"}}>
+          <body>{this.state.projectInfo.projectreadme}</body>
+        </Container>
+      </Paper>
       <MainContainer style={{width: '100%', marginTop: '5vh', textAlign: 'center'}}>
         <Container style={{position: "relative"}}>
         </Container>
@@ -168,13 +205,17 @@ class Project extends Component {
                     {column.feedList.map(card => {
                       return (
                         <Draggable key={card.id}>
-                          <Paper square style={column.style} {...card.props}>
-                          <div style={{position: "absolute"}}>
+                          <Paper square style={{width: '90%', height: '20vh', marginTop: '1vh',
+                                                marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+                                                display: 'flex', flexDirection: 'column', ...column.style}} {...card.props}>
+                          <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
                             <SettingIcon onClick={this.handleFeedClose}/>
                             <Dialog open={this.state.openfeed} onClose={this.handleFeedClose} aria-labelledby="form-dialog-title">
                               <Feed card={card} modifyCard={this.modifyCard}/> 
                             </Dialog>
+                            <CancelIcon/>
                           </div>
+                          <Divider />
                           <div style={{display: "flex", height: "60%", alignItems: "middle",justifyContent: "center"}}>
                             <h3>{card.feedname}</h3>
                           </div>
@@ -204,6 +245,7 @@ class Project extends Component {
         <Container style={{marginTop: '3vh'}}>
           <Button style={{width: '90%'}}variant="outlined" color="secondary">프로젝트 저장하기</Button>
         </Container>
+      </MainContainer>
       </MainContainer>
     );
   }

@@ -12,6 +12,13 @@ const ProjOrder = ( {match} ) => {
         feedInfo : state.FeedReducer.feedlist
     })); // 유저정보를 가져옴
 
+    const loginUserInfo = JSON.parse(sessionStorage.getItem("loginUserInfo"));
+
+    const projectInfo = {
+        subjectid: match.params.name, // 학수번호
+        projectid: match.params.pname // Project Object Id
+    }
+
     let temp = [
         {
             feedList: []
@@ -35,8 +42,8 @@ const ProjOrder = ( {match} ) => {
 
     return (
         <Route>
-            <Mainbar mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
-            <Project feed={temp} classes={useStyles()}/>
+            <Mainbar loginUserInfo={loginUserInfo} projectInfo={projectInfo} mainMenuInfo={mainMenuInfo} classes={useStyles()}/>
+            <Project loginUserInfo={loginUserInfo} projectInfo={projectInfo} classes={useStyles()}/>
         </Route>
     );
 }

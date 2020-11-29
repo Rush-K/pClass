@@ -5,8 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import SettingIcon from '@material-ui/icons/Settings';
 import DGUmark from '../../img/dguMarkonly.png';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import axios from 'axios';
 import Drawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -19,24 +20,25 @@ import List from '@material-ui/core/List';
 import SubjectIcon from '@material-ui/icons/Subject';
 import Link from '@material-ui/core/Link';
 import LogoutIcon from '@material-ui/icons/ExitToApp';
+import Tools from './Tools';
 
 class Mainbar extends Component {
     constructor(props) {
       super(props);
       this.state = {
+        project: this.props.projectInfo,
         subjectlist: null,
         homeopen: false,
-        miopen: false,
-        open: false
+        open: false,
+
+        settingopen: false,
       }
     }
-    memberInvite = () => {
-      this.setState({miopen: !this.state.miopen});
-    }
+
     goToMain = () => {
       this.setState({homeopen : !this.state.homeopen});
     }
-
+    settingClose = () => this.setState({settingopen: !this.state.settingopen});
     menuClose = () => this.setState({open: !this.state.open});
     homeClose = () => this.setState({homeopen: !this.state.homeopen});
     
@@ -55,18 +57,29 @@ class Mainbar extends Component {
 
     render() {
       const { classes } = this.props;
+
       console.log(this.state)
         return (
           <div className={classes.root}>
           <AppBar style={{backgroundColor: '#F6BB43'}} position="static">
-            <Toolbar>
+            <Toolbar style={{display: 'flex', flexDirection: 'row'}}>
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.subjectInfo}>
                 <MenuIcon />
               </IconButton>
-              <div onClick={this.goToMain} style={{display: "inline-flex"}}>
+              <div onClick={this.goToMain} style={{display: "flex"}}>
                 <img className={classes.markSize} src={DGUmark}/>
                 <Typography variant="h5" className={classes.title}>DGU pClass</Typography>
               </div>
+
+              <Container style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>
+              
+              {/* 프로젝트 화면 기능 툴바 */}
+              {this.state.project != undefined &&
+               <SettingIcon onClick={this.settingClose}/>
+              } <Dialog open={this.state.settingopen} onClose={this.settingClose}>
+              <Tools project={this.state.project}/></Dialog>
+
+              </Container>
 
               {/* 홈 이동 */}
               {this.state.homeopen === true && 

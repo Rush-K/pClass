@@ -29,17 +29,46 @@ class Subject extends Component {
       this.setState({subjectInfo: temp});
     }
 
-    addProject = (prev) => {
-      const pl = this.state.projectlist;
-      this.props.projectCreate(prev);
-      this.setState({projectlist: pl.concat(prev), numofproject: this.state.numofproject + 1});
+    updateProject = async () => {
+      let temp = await axios.get(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/subjectmenu/${this.props.subjectid}`)
+                              .then(function (response) {
+                                  console.log(response);
+                                  return response.data;
+                              }).catch(function (error) {
+                                  console.log(error);
+                              });
+      this.setState({update: false});
     }
 
-    delProject = (data) => {
-      const pl = this.state.projectlist;
-      this.props.projectDelete(data);
-      pl.splice(pl.indexOf(data), 1);
-      this.setState({projectlist: pl, numofproject: this.state.numofproject - 1});
+    addProject = async (prev) => {
+      let temp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.subjectid}/project/register`, {
+                              name: this.props.userInfo.name,
+                              projectname: prev.projectname,
+                              projectreadme: prev.projectreadme,
+                              userId: this.props.userInfo.userid,
+                              subId: this.props.subjectid
+                            })
+                            .then(function (response) {
+                              alert("프로젝트가 추가되었습니다.");
+                              console.log(response);
+                            })
+                            .catch(function (error) {
+                              console.log(error);
+                            });
+      this.loadProject();
+    }
+
+    delProject = async (data) => {
+      let temp = await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${data._id}/delete`, {
+                              projectname: data.projectname,
+                              userId: this.props.userInfo._id
+                            }).then(function (response) {
+                              console.log(response);
+                            })
+                            .catch(function (error) {
+                              console.log(error);
+                            })
+      this.loadProject();
     }
 
     handleProjectFormClose = () => this.setState({open: !this.state.open})
@@ -48,26 +77,27 @@ class Subject extends Component {
       if (this.state.subjectInfo === null) {
         return ( <div onClick={this.loadProject()} />);
       }
+
       console.log(this.state);
 
         return(
             <Container style={{display: 'block',justifyContent: 'center',
              alignItems: 'center', textAlign: 'center'}}>
               <h1 style={{color: '#F6BB43'}}>{this.props.subjectname} Project List</h1>
-              <Paper style={{display: 'flex',width:'100%', height:'60vh'}} elevation={3}>
+              <Paper style={{display: 'flex',width:'100%', height:'60vh', overflow: 'scroll'}} elevation={3}>
                 <List style={{width: '85%'}}>
-                {this.state.subjectInfo.p_list.map(project => (
-                <ListItem button key={project.projectname} component={Link} href={`/subject/${this.props.subjectname}/${project.projectid}`}>
+                {this.state.subjectInfo.map(project => (
+                <ListItem button key={project._id} component={Link} href={`/subject/${this.props.subjectid}/${project._id}`}>
                   <ListItemIcon><ProjectIcon /></ListItemIcon>
                   <ListItemText style={{fontWeight: '2'}} primary={project.projectname} />
                   <Box style={{display: 'inline-flex', justifyContent: 'left'}}>
-                    <ListItemText primary={`Leader : ${project.projectleader} 님`} />
+                    <ListItemText primary={`Leader : ${project.leader} 님`} />
                   </Box>
                 </ListItem>
               ))}
                 </List>
                 <List>
-                  {this.state.subjectInfo.p_list.map(project => (
+                  {this.state.subjectInfo.map(project => (
                     <ListItem onClick={() => this.delProject(project)}>
                       <ListItemIcon>
                        <CancelIcon/>

@@ -7,8 +7,8 @@ class Addprojectform extends Component {
         this.numofproject = this.props.numofproject;
         this.addProject = this.props.addProject;
         this.state ={
-            projectname: null,
-            projectreadme: null
+            projectname: "",
+            projectreadme: ""
         }
     }
 
@@ -20,12 +20,17 @@ class Addprojectform extends Component {
     }
 
     add = () => {
-        this.addProject(this.state);
-        alert("프로젝트가 추가되었습니다.");
-        console.log(this.state);
+        if (this.state.projectname != "" && this.state.projectreadme != "") {
+            this.addProject(this.state);
+            console.log(this.state);
+        } else {
+            alert("모든 입력 조건을 채워주세요.");
+        }
     }
 
     render() {
+        console.log(this.state.projectname);
+
         return  (
             <Container style={{width: "600px", height: "400px"}}>
             <h1> 프로젝트 개설하기 </h1>
@@ -40,6 +45,7 @@ class Addprojectform extends Component {
             InputLabelProps={{
             shrink: true,
             }}
+            value={this.state.projectname}
             onChange={this.nameChange}
             />
             <Divider />
@@ -50,6 +56,7 @@ class Addprojectform extends Component {
             rows={6}
             placeholder="프로젝트 정보를 입력해주세요."
             variant="outlined"
+            value={this.state.projectreadme}
             style={{marginTop: "2vh", width: "95%"}}
             onChange={this.readmeChange}
             />

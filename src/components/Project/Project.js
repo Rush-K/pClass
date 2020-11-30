@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Container, Draggable } from "react-smooth-dnd";
-import { applyDrag } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import { Typography, Divider, Dialog,
-         Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
+import { Typography, Divider, Dialog, DialogContentText,
+         Accordion, AccordionSummary, AccordionDetails, 
+         DialogContent, DialogTitle, DialogActions, Button} from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
 import Feed from "./Feed";
@@ -20,7 +20,11 @@ class Project extends Component {
     super(props);
     this.getCardPayload = this.getCardPayload.bind(this);
     this.state = {
-      loading: false,
+      feedloading: false,
+      projectloading: false,
+
+      openfeeddelete: false,
+
       openfeed: false,
       openfeedform: false,
       openfeedcomment: false,
@@ -82,36 +86,40 @@ class Project extends Component {
                           }).catch(function (error) {
                                 //console.log(error);
                           });
+    this.loadFeed();
+    this.setState({projectInfo: temp, projectloading: true});
+  }
 
-    let todotemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/ToDo`)
-                          .then(function (response) {
-                                //console.log(response);
-                                return response.data;
-                          }).catch(function (error) {
-                                //console.log(error);
-                          });
+  loadFeed = async () => {
+    let todotemp = await axios.get(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/ToDo`)
+    .then(function (response) {
+          //console.log(response);
+          return response.data;
+    }).catch(function (error) {
+          //console.log(error);
+    });
 
-    let doingtemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Doing`)
-                          .then(function (response) {
-                                //console.log(response);
-                                return response.data;
-                          }).catch(function (error) {
-                                //console.log(error);
-                          });
+let doingtemp = await axios.get(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Doing`)
+    .then(function (response) {
+          //console.log(response);
+          return response.data;
+    }).catch(function (error) {
+          //console.log(error);
+    });
 
-    let donetemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Done`)
-                          .then(function (response) {
-                                //console.log(response);
-                                return response.data;
-                          }).catch(function (error) {
-                                //console.log(error);
-                          });
+let donetemp = await axios.get(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Done`)
+    .then(function (response) {
+          //console.log(response);
+          return response.data;
+    }).catch(function (error) {
+          //console.log(error);
+    });
 
-    const t = this.state.scene;
-    t.children[0].feedList = todotemp;
-    t.children[1].feedList = doingtemp;
-    t.children[2].feedList = donetemp;
-    this.setState({scene: t, projectInfo: temp, loading: true});
+const t = this.state.scene;
+t.children[0].feedList = todotemp;
+t.children[1].feedList = doingtemp;
+t.children[2].feedList = donetemp;
+this.setState({scene: t, feedloading: true});
   }
 
   addChildren = async (prev) => {
@@ -132,7 +140,8 @@ class Project extends Component {
           console.log(error);
     });
     this.handleFeedFormClose();
-    this.loadProject();
+    this.setState({feedloading: false});
+    this.loadFeed();
   }
 
   modifyChildren = async (prev, columnId) => {
@@ -144,33 +153,41 @@ class Project extends Component {
     }).catch(function (error) {
       //console.log(error);
     });
-    this.loadProject();
+    this.setState({feedloading: false});
+    this.loadFeed();
   }
 
   delChildren = async (prev) => {
     let item = await axios.delete(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/${prev._id}/deletefeed`);
-    this.loadProject();
+    this.setState({feedloading: false, openfeeddelete: false});
+    this.loadFeed();
   }
 
   modifyFeed = async (prev) => {
     if (prev.writer === this.props.loginUserInfo.email) {
       await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/${prev._id}/modifyfeed`, {
-                               body: prev
+                               prev
                              }).then(function (response) {
+                               console.log(response)
                                alert("성공적으로 수정되었습니다");
                              }).catch(function (error) { 
                                alert("수정에 실패하였습니다.");
                              });
       this.handleFeedClose();
+      this.setState({feedloading: false});
+      this.loadFeed();
+    } else {
+      alert("피드 수정 권한이 없습니다.");
     }
   }
 
+  handlefeeddeleteClose = () => this.setState({openfeeddelete: !this.state.openfeeddelete})
   handleFeedFormClose = () => this.setState({openfeedform: !this.state.openfeedform})
   handleFeedClose = () => this.setState({openfeed: !this.state.openfeed})
   handleFeedCommentClose = () => this.setState({openfeedcomment: !this.state.openfeedcomment})
 
   render() {
-    if (this.state.loading === false) {
+    if (this.state.projectloading === false) {
       return ( <div onClick={this.loadProject()}></div>);
     }
     console.log(this.state);
@@ -267,7 +284,31 @@ class Project extends Component {
                               <Feed loginUserInfo={this.props.loginUserInfo} projectInfo={this.props.projectInfo} 
                                     card={card} modifyFeed={this.modifyFeed} /> 
                             </Dialog>
-                            <CancelIcon onClick={() => this.delChildren(card)}/>
+                            <CancelIcon onClick={this.handlefeeddeleteClose}/>
+                            {this.state.openfeeddelete === true &&
+                                           <Dialog
+                                           open={this.state.openfeeddelete}
+                                           keepMounted
+                                           onClose={this.handlefeeddeleteClose}
+                                           aria-labelledby="alert-dialog-slide-title"
+                                           aria-describedby="alert-dialog-slide-description"
+                                         >
+                                           <DialogTitle id="alert-dialog-slide-title">{"피드를 삭제하시겠습니까?"}</DialogTitle>
+                                           <DialogContent>
+                                             <DialogContentText id="alert-dialog-slide-description">
+                                               확인을 누르시면 삭제합니다.
+                                             </DialogContentText>
+                                           </DialogContent>
+                                           <DialogActions>
+                                             <Button onClick={this.handlefeeddeleteClose} color="primary">
+                                               취소
+                                             </Button>
+                                             <Button onClick={() => this.delChildren(card)} color="primary">
+                                               확인
+                                             </Button>
+                                           </DialogActions>
+                                         </Dialog>
+                            }
                           </div>
                           <Divider />
                           <div style={{display: "flex", height: "60%", alignItems: "middle",justifyContent: "center"}}>
@@ -280,7 +321,7 @@ class Project extends Component {
                           <CommentIcon />
                           </div>
                           <Dialog open={this.state.openfeedcomment} onClose={this.handleFeedCommentClose} aria-labelledby="form-dialog-title">
-                              <Comment card={card} modifyCard={this.modifyCard}/> 
+                              <Comment card={card} projectInfo={this.props.projectInfo} loginUserInfo={this.props.loginUserInfo} /> 
                           </Dialog>
                           </Paper>
                         </Draggable>
@@ -310,6 +351,7 @@ class Project extends Component {
   onCardDrop = (columnId, dropResult) => {
     if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
       console.log(dropResult);
+      console.log(columnId);
       this.modifyChildren(dropResult.payload, columnId);
     }
   }

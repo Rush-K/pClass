@@ -7,7 +7,8 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import SettingIcon from '@material-ui/icons/Settings';
 import DGUmark from '../../img/dguMarkonly.png';
-import { Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import { Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
+         Menu, MenuItem, Popper } from '@material-ui/core';
 import axios from 'axios';
 import Drawer from '@material-ui/core/Drawer';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
@@ -82,8 +83,8 @@ class Mainbar extends Component {
               {this.state.project != undefined &&
                <SettingIcon onClick={this.settingClose}/>
               } <Dialog open={this.state.settingopen} onClose={this.settingClose}>
-              <Tools project={this.state.project}/></Dialog>
-
+              <Tools loginUserInfo={this.props.loginUserInfo} project={this.state.project}/>
+              </Dialog>
               </Container>
 
               {/* 홈 이동 */}

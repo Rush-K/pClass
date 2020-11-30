@@ -46,7 +46,8 @@ class Subject extends Component {
                               projectname: prev.projectname,
                               projectreadme: prev.projectreadme,
                               userId: this.props.userInfo.userid,
-                              subId: this.props.subjectid
+                              subId: this.props.subjectid,
+                              email: this.props.userInfo.email
                             })
                             .then(function (response) {
                               alert("프로젝트가 추가되었습니다.");

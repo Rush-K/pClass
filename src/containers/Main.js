@@ -8,7 +8,9 @@ import { useSelector } from 'react-redux';
 
 const Main = () => {
   const loginUserInfo = JSON.parse(sessionStorage.getItem("loginUserInfo"));
+
   console.log(loginUserInfo);
+  
        return (
         <div>
           <Route>

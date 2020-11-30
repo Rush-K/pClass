@@ -22,7 +22,9 @@ class Project extends Component {
     this.state = {
       feedloading: false,
       projectloading: false,
+      checking: false,
 
+      error: false,
       openfeeddelete: false,
 
       openfeed: false,
@@ -166,7 +168,13 @@ this.setState({scene: t, feedloading: true});
   modifyFeed = async (prev) => {
     if (prev.writer === this.props.loginUserInfo.email) {
       await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/${prev._id}/modifyfeed`, {
-                               prev
+                              feedname: prev.feedname,
+                              writer: prev.writer,
+                              manager: prev.manager,
+                              start_date: prev.start_date,
+                              end_date: prev.end_date,
+                              status: prev.status,
+                              content: prev.content
                              }).then(function (response) {
                                console.log(response)
                                alert("성공적으로 수정되었습니다");
@@ -181,6 +189,26 @@ this.setState({scene: t, feedloading: true});
     }
   }
 
+  check = async () => {
+    let result = true;
+    await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/isContributed`, {
+          email: this.props.loginUserInfo.email
+      }).then(function (response) {
+        if (response.data === true) {
+          console.log(response)
+          result = true;
+        } else {
+          console.log(response)
+          result = false;
+        }
+    })
+    if (result === true) {
+      this.setState({checking: true});
+    } else {
+      this.setState({checking: true, error: true});
+    }
+  }
+
   handlefeeddeleteClose = () => this.setState({openfeeddelete: !this.state.openfeeddelete})
   handleFeedFormClose = () => this.setState({openfeedform: !this.state.openfeedform})
   handleFeedClose = () => this.setState({openfeed: !this.state.openfeed})
@@ -189,8 +217,14 @@ this.setState({scene: t, feedloading: true});
   render() {
     if (this.state.projectloading === false) {
       return ( <div onClick={this.loadProject()}></div>);
+    } else if (this.state.checking === false) {
+      return ( <div onClick={this.check()}></div> );
+    } else if (this.state.error === true) {
+      alert("해당 프로젝트의 인원이 아닙니다.");
+      return ( <Dialog open={true}>
+          <Button href="/main">이전 페이지로 이동</Button>
+      </Dialog>  );
     }
-    console.log(this.state);
     return (
       <MainContainer style={{marginBottom: '5vh'}}>
       {/* 프로젝트 정보 창 */}
@@ -231,7 +265,6 @@ this.setState({scene: t, feedloading: true});
         </Container>
         <Container
           orientation="horizontal"
-          onDrop={this.onColumnDrop}
           dragHandleSelector=".column-drag-handle"
           dropPlaceholder={{
             animationDuration: 150,
@@ -243,7 +276,7 @@ this.setState({scene: t, feedloading: true});
         > 
           {this.state.scene.children.map(column => {
             return (
-              <Paper varient="outlined" style={{display: 'inline-flex', justifyContent: 'center', width: '30%', marginLeft: '2vw'}}>
+              <Paper varient="outlined" style={{display: 'inline-flex', justifyContent: 'center', width: '20vw', marginLeft: '2vw'}}>
                 <div style={{width: "100%"}}>
                     {column.name}
                     <Divider />

@@ -29,12 +29,7 @@ class Register extends Component {
                 email: this.state.useremail,
                 password: this.state.userpassword,
                 role: this.state.userstatus
-            }).then(function (response) {
-                alert(`회원 가입이 ${this.state.useremail}로 성공적으로 완료되었습니다.`);
-            }).catch(function (error) {
-                console.log(error);
-                alert("회원 가입에 실패햐였습니다.");
-            });    // api Call
+            }).then(alert(`회원 가입이 ${this.state.useremail}로 성공적으로 완료되었습니다.`))
         } else {
             alert("회원 가입 폼을 빠짐없이 정확히 입력해주세요.");
         }

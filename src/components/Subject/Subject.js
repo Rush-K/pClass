@@ -84,7 +84,7 @@ class Subject extends Component {
             <Container style={{display: 'block',justifyContent: 'center',
              alignItems: 'center', textAlign: 'center'}}>
               <h1 style={{color: '#F6BB43'}}>{this.props.subjectname} Project List</h1>
-              <Paper style={{display: 'flex',width:'100%', height:'60vh', overflow: 'scroll'}} elevation={3}>
+              <Paper style={{display: 'flex',width:'100%', height:'60vh', overflow: 'auto'}} elevation={3}>
                 <List style={{width: '85%'}}>
                 {this.state.subjectInfo.map(project => (
                 <ListItem button key={project._id} component={Link} href={`/subject/${this.props.subjectid}/${project._id}`}>

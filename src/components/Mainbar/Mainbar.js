@@ -66,9 +66,14 @@ class Mainbar extends Component {
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={this.subjectInfo}>
                 <MenuIcon />
               </IconButton>
-              <div onClick={this.goToMain} style={{display: "flex"}}>
-                <img className={classes.markSize} src={DGUmark}/>
-                <Typography variant="h5" className={classes.title}>DGU pClass</Typography>
+              <div style={{justifyContent: 'center'}}>
+                <img onClick={this.goToMain} className={classes.markSize} src={DGUmark}/>
+              </div>
+              <div style={{display: "flex"}}>
+                <div style={{display: "block"}}>
+                  <Typography style={{width: '50vh'}} variant="h4">DGU pClass</Typography>
+                  <Typography>{this.props.loginUserInfo.name} 님 ({this.props.loginUserInfo.email})</Typography>
+                </div>
               </div>
 
               <Container style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end'}}>

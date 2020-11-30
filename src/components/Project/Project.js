@@ -3,7 +3,8 @@ import { Container, Draggable } from "react-smooth-dnd";
 import { applyDrag } from "./utils";
 import MainContainer from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
-import { Typography, Divider, Dialog, Button } from "@material-ui/core";
+import { Typography, Divider, Dialog,
+         Accordion, AccordionSummary, AccordionDetails } from "@material-ui/core";
 import PlusButton from "@material-ui/icons/AddBox";
 import Addfeedform from "./Addfeedform";
 import Feed from "./Feed";
@@ -11,6 +12,7 @@ import Comment from "./Comment";
 import SettingIcon from '@material-ui/icons/FindInPage';
 import CommentIcon from '@material-ui/icons/Comment';
 import CancelIcon from '@material-ui/icons/Cancel';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import axios from 'axios';
 
 class Project extends Component {
@@ -75,34 +77,34 @@ class Project extends Component {
                              projectId: this.props.projectInfo.projectid
                           })
                           .then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 return response.data;
                           }).catch(function (error) {
-                                console.log(error);
+                                //console.log(error);
                           });
 
     let todotemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/ToDo`)
                           .then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 return response.data;
                           }).catch(function (error) {
-                                console.log(error);
+                                //console.log(error);
                           });
 
     let doingtemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Doing`)
                           .then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 return response.data;
                           }).catch(function (error) {
-                                console.log(error);
+                                //console.log(error);
                           });
 
     let donetemp = await axios.post(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/Done`)
                           .then(function (response) {
-                                console.log(response);
+                                //console.log(response);
                                 return response.data;
                           }).catch(function (error) {
-                                console.log(error);
+                                //console.log(error);
                           });
 
     const t = this.state.scene;
@@ -134,15 +136,15 @@ class Project extends Component {
   }
 
   modifyChildren = async (prev, columnId) => {
-    let item = await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/feedDragDrop`, {
+    await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/feedDragDrop`, {
       feedId: prev._id,
       status: columnId
     }).then(function (response) {
-      console.log(response);
+      //console.log(response);
     }).catch(function (error) {
-      console.log(error);
+      //console.log(error);
     });
-    await this.loadProject();
+    this.loadProject();
   }
 
   delChildren = async (prev) => {
@@ -150,27 +152,17 @@ class Project extends Component {
     this.loadProject();
   }
 
-  modifyCard = (prev) => {
-    const feedinfo = this.state.scene;
-    const complete = false;
-
-    for (let column in feedinfo.children) {
-      for (let feed in column.feedList) {
-        if (prev.id === feed.id) {
-          feedinfo.children[feedinfo.children.indexOf(column)].
-          feedList[column.feedList.indexOf(feed)] = prev;
-          complete = !complete;
-          break;
-        }
-      }
-      if (complete === true) break;
+  modifyFeed = async (prev) => {
+    if (prev.writer === this.props.loginUserInfo.email) {
+      await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.projectInfo.subjectid}/${this.props.projectInfo.projectid}/${prev._id}/modifyfeed`, {
+                               body: prev
+                             }).then(function (response) {
+                               alert("성공적으로 수정되었습니다");
+                             }).catch(function (error) { 
+                               alert("수정에 실패하였습니다.");
+                             });
+      this.handleFeedClose();
     }
-    console.log(feedinfo);
-
-    this.setState({
-      scene: feedinfo
-    });
-    
   }
 
   handleFeedFormClose = () => this.setState({openfeedform: !this.state.openfeedform})
@@ -185,26 +177,38 @@ class Project extends Component {
     return (
       <MainContainer style={{marginBottom: '5vh'}}>
       {/* 프로젝트 정보 창 */}
-      <Paper style={{display: "flex", flexDirection: "column", overflow: "scroll", marginTop: "2vh", width: "100%", height: "500px"}} varient="outlined" elevation={4}>
-        <Container style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center"}}>
-          <h1>[ {this.state.projectInfo.projectname} ]</h1>
-        </Container>
-        <Divider style={{width: '100%'}}/>
-        <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-          <body>Leader : {this.state.projectInfo.leader}</body>
-        </Container>
-        <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
-          {this.state.projectInfo.contributor.map(member => {
-            return (
-              <body>( {member} )</body>
-            );
-          })}
-        </Container>
-        <Divider style={{width: '100%'}}/>
-        <Container style={{width: "95%", display: "flex", marginTop: "2vh", marginLeft: "1vh"}}>
-          <body>{this.state.projectInfo.projectreadme}</body>
-        </Container>
-      </Paper>
+      <Accordion style={{marginTop: '5vh'}}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>[{this.state.projectInfo.projectname}]'s Information</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Container style={{display: "flex", flexDirection: "column", overflow: "auto", marginTop: "2vh", width: "100%", height: "500px"}} varient="outlined" elevation={4}>
+            <Container style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center"}}>
+              <h1>[ {this.state.projectInfo.projectname} ]</h1>
+            </Container>
+            <Divider style={{width: '100%'}}/>
+            <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+              <body>Leader : {this.state.projectInfo.leader}</body>
+            </Container>
+            <Container style={{width: "100%", display: "flex", justifyContent: "flex-end"}}>
+              {this.state.projectInfo.contributor.map(member => {
+                return (
+                  <body>( {member} )</body>
+                );
+              })}
+            </Container>
+            <Divider style={{width: '100%'}}/>
+            <Container style={{width: "95%", display: "flex", marginTop: "2vh", marginLeft: "1vh"}}>
+              <body>{this.state.projectInfo.projectreadme}</body>
+            </Container>
+          </Container>
+        </AccordionDetails>
+      </Accordion>
+
       <MainContainer style={{width: '100%', marginTop: '5vh', textAlign: 'center'}}>
         <Container style={{position: "relative"}}>
         </Container>
@@ -260,7 +264,8 @@ class Project extends Component {
                           <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
                             <SettingIcon onClick={this.handleFeedClose}/>
                             <Dialog open={this.state.openfeed} onClose={this.handleFeedClose} aria-labelledby="form-dialog-title">
-                              <Feed card={card} modifyCard={this.modifyCard}/> 
+                              <Feed loginUserInfo={this.props.loginUserInfo} projectInfo={this.props.projectInfo} 
+                                    card={card} modifyFeed={this.modifyFeed} /> 
                             </Dialog>
                             <CancelIcon onClick={() => this.delChildren(card)}/>
                           </div>

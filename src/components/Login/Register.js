@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { FormControl, FormLabel, RadioGroup, Radio, FormControlLabel,
          Paper, Divider, TextField, Container, Button } from '@material-ui/core';
+import axios from 'axios';
 
 class Register extends Component {
     constructor() {
@@ -23,7 +24,17 @@ class Register extends Component {
             this.state.userpassword != "" &
             this.state.userstatus != "") {
             
-                // api Call
+            axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/register', {
+                name: this.state.username,
+                email: this.state.useremail,
+                password: this.state.userpassword,
+                role: this.state.userstatus
+            }).then(function (response) {
+                alert(`회원 가입이 ${this.state.useremail}로 성공적으로 완료되었습니다.`);
+            }).catch(function (error) {
+                console.log(error);
+                alert("회원 가입에 실패햐였습니다.");
+            });    // api Call
         } else {
             alert("회원 가입 폼을 빠짐없이 정확히 입력해주세요.");
         }

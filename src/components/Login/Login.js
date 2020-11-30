@@ -112,16 +112,13 @@ class Login extends Component {
                 autoComplete="current-password"
                 onChange={this.passwordChange}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="secondary" />}
-                label="ID 기억하기"
-              />
               <Button
                 fullWidth
                 variant="contained"
                 color="secondary"
                 className={classes.submit}
                 onClick={this.tryLogin}
+                style={{marginTop: "2vh"}}
               >
                 LOGIN
               </Button>

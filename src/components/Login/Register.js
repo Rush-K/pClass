@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, FormLabel, RadioGroup, Radio, FormControlLabel,
-         Paper, Divider, TextField, Container, Button } from '@material-ui/core';
+import { Paper, Divider, TextField, Container, Button } from '@material-ui/core';
 import axios from 'axios';
 
 class Register extends Component {
@@ -21,14 +20,13 @@ class Register extends Component {
     create = () => {
         if (this.state.username != "" &&
             this.state.useremail != "" &&
-            this.state.userpassword != "" &
-            this.state.userstatus != "") {
+            this.state.userpassword != "" ) {
             
             axios.post('http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/users/register', {
                 name: this.state.username,
                 email: this.state.useremail,
                 password: this.state.userpassword,
-                role: this.state.userstatus
+                //status: this.state.userstatus
             }).then(alert(`회원 가입이 ${this.state.useremail}로 성공적으로 완료되었습니다.`))
         } else {
             alert("회원 가입 폼을 빠짐없이 정확히 입력해주세요.");
@@ -42,7 +40,7 @@ class Register extends Component {
             <Paper elevation={3}
             style={{
                 width: "100%",
-                height: "60vh"
+                height: "45vh"
             }}>
                 <Container style={{display: 'flex', justifyContent: 'center'}}>
                     <h1> 회원 가입 </h1>
@@ -86,6 +84,7 @@ class Register extends Component {
                 }}
                 onChange={this.passwordChange}
                 />
+                {/*
                 <Divider />
                 <Container style={{marginTop: '1vh'}}>
                     <FormControl component="fieldset">
@@ -96,6 +95,7 @@ class Register extends Component {
                         </RadioGroup>
                     </FormControl>
                 </Container>
+                */}
                 <Divider />
                 <Container style={{display: 'flex', justifyContent: 'center'}}>
                     <Button style={{marginTop: "1vh", width: "100%"}}

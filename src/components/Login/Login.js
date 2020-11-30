@@ -3,15 +3,14 @@ import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import DGUmark from '../../img/dguMarkonly.png';
 import Title from '../../img/title.png';
 import axios from 'axios';
-import { Dialog, Link } from '@material-ui/core';
+import { Dialog } from '@material-ui/core';
 import { Register } from '.';
+import Intro from '../../img/intro.png';
 
 class Login extends Component {
     constructor(props) {
@@ -40,7 +39,8 @@ class Login extends Component {
                 JSON.stringify({
                   userid: response.data.userId,
                   email: response.data.email,
-                  name: response.data.name
+                  name: response.data.name,
+                  status: response.data.status
                 })
             );
             alert("로그인이 성공적으로 완료되었습니다.")
@@ -75,7 +75,10 @@ class Login extends Component {
           <Container style={{marginTop: '15vh', alignItems: 'center',gridColumn: '1 / 2'}}>
             {/* 회원 가입 창*/}
             {this.state.registeropen === true && <Register />}
-            {this.state.registeropen === false && <img width="100%" src={Title}/>}
+            {this.state.registeropen === false && <Container style={{display:'block'}}>
+              <img width="100%" src={Title}/>
+              <img width="100%" src={Intro}/>
+              </Container>}
           </Container>
           <Container style={{marginTop: '12vh', alignItems: 'center',gridColumn: '2 / 3'}} component="main" maxWidth="xs">
           <CssBaseline />

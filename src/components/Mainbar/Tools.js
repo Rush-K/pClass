@@ -30,7 +30,10 @@ class Tools extends Component {
     
     modifyProject = async () => {
         let tf = true;
-        await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.project.subjectid}/${this.props.project.projectid}/settings/modifyname`, {                        
+        if (this.state.newprojectname === "" || this.state.newprojectreadme === "") {
+            alert("입력 폼을 정확히 채워주세요.");
+        } else {
+            await axios.put(`http://ec2-15-165-236-0.ap-northeast-2.compute.amazonaws.com:4000/api/${this.props.project.subjectid}/${this.props.project.projectid}/settings/modifyname`, {                        
                 beforename: this.state.projectInfo.projectname,
                 modifyname: this.state.newprojectname,
                 modifyreadme: this.state.newprojectreadme
@@ -43,6 +46,7 @@ class Tools extends Component {
         .catch(function (error) {
             console.log(error)
         });
+        }
         if (tf === false) this.setState({inside: false})
     }
 

@@ -276,7 +276,7 @@ this.setState({scene: t, feedloading: true});
         > 
           {this.state.scene.children.map(column => {
             return (
-              <Paper varient="outlined" style={{display: 'inline-flex', justifyContent: 'center', width: '20vw', marginLeft: '2vw'}}>
+              <Paper varient="outlined" style={{marginBottom: "5vh", display: 'inline-flex', justifyContent: 'center', width: '30%', marginLeft: '2vw'}}>
                 <div style={{width: "100%"}}>
                     {column.name}
                     <Divider />
@@ -308,8 +308,8 @@ this.setState({scene: t, feedloading: true});
                     {column.feedList.map(card => {
                       return (
                         <Draggable key={card.id}>
-                          <Paper square style={{width: '90%', height: '20vh', marginTop: '1vh',
-                                                marginLeft: '1vw', marginRight: '1vw', marginBottom: '1vh',
+                          <Paper square style={{width: '90%', height: '20vh', marginTop: '3vh',
+                                                marginLeft: '1vw', marginRight: '1vw', marginBottom: '3vh',
                                                 display: 'flex', flexDirection: 'column', ...column.style}} {...card.props}>
                           <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
                             <SettingIcon onClick={this.handleFeedClose}/>

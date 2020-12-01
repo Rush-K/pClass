@@ -19,7 +19,7 @@ git clone https://github.com/Rush-K/pClass.git
 
 ### Installing
 
-yarn install 을 이용하여 해당 프로그램의 모듈을 다운로드 하세요.
+npm install 을 이용하여 해당 프로그램의 모듈을 다운로드 하세요.
 
 ## Built With
 

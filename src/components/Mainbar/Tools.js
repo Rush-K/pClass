@@ -104,9 +104,10 @@ class Tools extends Component {
             return ( <div><Button href={`/subject/${this.props.project.subjectid}`}>페이지 나가기</Button></div>)
         }
         return (
-            <div style={{display: "flex", justifyContent: "center", marginTop: "5vh", marginBottom: "5vh"}}>
+            <div style={{width: '100%', display: "flex", justifyContent: "center", marginTop: "5vh", marginBottom: "5vh"}}>
             <Paper elevation={0}
             style={{
+                width: '100%',
                 justifyContent: 'center'
             }}>
                 <Container style={{marginBottom: "2vh"}}>
@@ -129,7 +130,7 @@ class Tools extends Component {
                 <Typography variant="h7">팀원 : </Typography>
                 {this.state.projectInfo.contributor.map(member => {
                     return (
-                        <Typography variant="h7">{member}/</Typography>
+                        <Typography style={{display: 'block', width: '100%'}} variant="h7">{member}</Typography>
                     )
                 })}
                 </Container>

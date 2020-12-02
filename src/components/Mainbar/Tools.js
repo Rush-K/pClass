@@ -25,7 +25,8 @@ class Tools extends Component {
                               }).catch(function (error) {
                                     //console.log(error);
                               });
-        this.setState({projectInfo: temp, update: true});
+        this.setState({projectInfo: temp, update: true,
+                       newprojectname: temp.projectname, newprojectreadme: temp.projectreadme});
     }
     
     modifyProject = async () => {
